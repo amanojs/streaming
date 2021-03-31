@@ -3,9 +3,9 @@
 ## 開発環境
 
 ### エディタ
-VScode\
+VScode
 
-下記の設定を setting.json に追加してください。\
+下記の設定を setting.json に追加してください。
 ```json
 {
   ・・・
@@ -47,13 +47,13 @@ https://jestjs.io/ja/
 
 ## npm script
 
-### npm start
+### npm run start
 
 開発サーバーを 3000番 PORTで立ち上げます。\
 http://localhost:3000\
 (ホットリロード対応)
 
-### npm test
+### npm run test
 
 Jestでテストを実行します。
 
