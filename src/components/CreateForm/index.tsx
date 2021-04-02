@@ -1,22 +1,24 @@
 import * as React from 'react';
-import { Presenter, Input } from './Presenter';
+import { Presenter, PresenterProps } from './Presenter';
 
 export interface ContainerProps {
   width: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
   const [userName, setUserName] = React.useState('');
-  const inputs: Input[] = [
+  const inputs: PresenterProps['inputs'] = [
     {
       label: 'ユーザネーム',
-      placeholder: 'superman',
+      placeholder: '須鳥武 太郎',
       value: userName,
       onChange: (e) => setUserName(e.target.value)
     }
   ];
-  return <Presenter width={props.width} inputs={inputs} />;
+  const submitEvent = () => {
+    console.log('submit');
+  };
+  return <Presenter width={props.width} inputs={inputs} submitEvent={submitEvent} />;
 };
 CreateForm.defaultProps = {
   width: '100%'

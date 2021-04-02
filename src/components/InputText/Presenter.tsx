@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Input } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 interface PresenterProps {
   label: string;
@@ -12,8 +12,14 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <div>
-      <label>{props.label}</label>
-      <Input value={props.value} onChange={props.onChange} placeholder={props.placeholder} />
+      <div style={{ color: '#777', padding: '0 0 3px 0', fontSize: '15px' }}>{props.label}</div>
+      <TextField
+        fullWidth
+        variant="outlined"
+        value={props.value}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+      />
     </div>
   );
 };
