@@ -10,6 +10,4 @@ export default {
 const Template: Story<ContainerProps> = (props: ContainerProps) => <CreateForm {...props} />;
 
 export const NoValue = Template.bind({});
-NoValue.args = {
-  width: '100px'
-};
+NoValue.args = {};
