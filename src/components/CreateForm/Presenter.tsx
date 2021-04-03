@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Card, Button } from '@material-ui/core';
-import { InputText, ContainerProps as Input } from '../InputText';
+import { InputText } from '../InputText';
+import { InputSub } from './index';
 
 export interface PresenterProps {
   width: string;
-  inputs: Input[];
+  inputs: InputSub[];
   submitEvent: () => void;
 }
 
@@ -20,11 +21,13 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <Card className={classes.form_card}>
       <Grid container justify="center" spacing={1}>
-        {props.inputs.map((input) => {
+        {props.inputs.map((input: InputSub) => {
           return (
             <Grid item xs={8} key={input.label}>
               <InputText
                 label={input.label}
+                error={input.error}
+                msg={input.msg}
                 placeholder={input.placeholder}
                 value={input.value}
                 onChange={input.onChange}
