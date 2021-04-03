@@ -1,14 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { ThemeProvider } from '@material-ui/styles';
 import { theme } from './config/theme';
-import { Home } from './pages/Home';
+import { Routes } from './config/route';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Home />
+      <Routes />
     </ThemeProvider>
   );
 }
