@@ -1,12 +1,11 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
-import Home from './';
+import { Loading } from './';
 
 export default {
-  title: 'Page/Home',
-  component: Home
+  title: 'Page/Loading',
+  component: Loading
 } as Meta;
 
-const Template: Story = () => <Home />;
-
+const Template: Story = () => <Loading />;
 export const Default = Template.bind({});
