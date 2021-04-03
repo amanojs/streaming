@@ -14,7 +14,7 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <div>
-      <div style={{ color: '#777', padding: '0 0 3px 0', fontSize: '15px' }}>{props.label}</div>
+      <div style={{ color: '#606060', padding: '0 0 3px 0', fontSize: '13px', fontWeight: 'bold' }}>{props.label}</div>
       <TextField
         fullWidth
         error={props.error}
@@ -22,6 +22,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         variant="outlined"
         value={props.value}
         onChange={props.onChange}
+        color="secondary"
         placeholder={props.placeholder}
       />
     </div>

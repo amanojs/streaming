@@ -62,7 +62,7 @@ export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
 
   const submitEvent = () => {
     if (validateAll()) {
-      return alert('エラー項目があります');
+      return;
     }
     console.log('submit');
   };

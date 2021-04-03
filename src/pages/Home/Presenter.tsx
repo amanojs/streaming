@@ -1,24 +1,29 @@
 import * as React from 'react';
 import { Box, Grid } from '@material-ui/core';
+import { CreateForm } from '../../components/CreateForm';
 import { makeStyles } from '@material-ui/core/styles';
 import './main.css';
 
 export const Presenter: React.FC = () => {
   const useStyles = makeStyles({
     baseGrid: {
-      height: '100%'
+      position: 'relative',
+      height: '100%',
+      zIndex: 2
     }
   });
   const classes = useStyles();
   return (
     <div className="base">
-      <Box className="logo">
-        <span>S</span>treaming
-      </Box>
       <Grid container justify="center" alignItems="center" className={classes.baseGrid}>
-        <Grid item xs={3}></Grid>
+        <Grid container xs={11} sm={7} md={4} xl={3} spacing={6}>
+          <Grid item className="logo" xs={12}>
+            <span>S</span>treaming!!
+          </Grid>
+          <CreateForm width="100%" />
+        </Grid>
       </Grid>
-      <div className="custom-shape-divider-bottom-1617426966">
+      <div className="custom-shape">
         <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
           <path
             d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
