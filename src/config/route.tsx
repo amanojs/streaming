@@ -7,15 +7,23 @@ const Home = React.lazy(() => {
     ([moduleExports]) => moduleExports
   );
 });
+const Room = React.lazy(() => {
+  return Promise.all([import('../pages/Room'), new Promise((resolve) => setTimeout(resolve, 1000))]).then(
+    ([moduleExports]) => moduleExports
+  );
+});
 
 interface RouteBase {
   path: string;
   exact: boolean;
   name: string;
-  component: React.LazyExoticComponent<React.FC> | React.FC;
+  component: React.LazyExoticComponent<React.FC> | React.FC | typeof Room;
 }
 
-const routebases: Array<RouteBase> = [{ path: '/', exact: true, name: 'Home', component: Home }];
+const routebases: Array<RouteBase> = [
+  { path: '/', exact: true, name: 'Home', component: Home },
+  { path: '/room', exact: true, name: 'Room', component: Room }
+];
 
 export const Routes: React.FC = () => {
   const makeRoute = (routebase: RouteBase) => {
