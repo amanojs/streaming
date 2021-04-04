@@ -1,28 +1,27 @@
 import * as React from 'react';
 import io from 'socket.io-client';
+import { useSelector, useDispatch } from 'react-redux';
+import roomModule, { RoomState } from '../../store/modules/roomModule';
+import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 
-export default class Room extends React.Component {
-  state: { socket: null | SocketIOClient.Socket } = {
-    socket: null
-  };
+const Room: React.FC = () => {
+  const [mount, mountKeeper] = React.useState(null);
+  const room = useSelector((state: State) => state.room);
+  const dispach = useDispatch();
+  console.log(room);
 
-  componentDidMount(): void {
-    if (!this.state.socket) {
-      this.setState({ socket: io.connect(process.env.REACT_APP_API_URL as string) });
-    }
-  }
-
-  componentDidUpdate(): void {
-    console.log(this.state);
-    if (this.state.socket) {
-      this.state.socket?.on('connect', () => {
-        console.log('WebSocketサーバーに接続しました。');
+  React.useEffect(() => {
+    if (!room.roomId) {
+      const socket = io.connect(process.env.REACT_APP_API_URL as string);
+      socket.on('connect', () => {
+        console.log('connected');
+        dispach(roomModule.actions.setRoom({ roomId: 'iii' }));
       });
     }
-  }
+  }, [mountKeeper]);
 
-  render(): JSX.Element {
-    return <Presenter />;
-  }
-}
+  return <Presenter />;
+};
+
+export default Room;

@@ -17,7 +17,7 @@ interface RouteBase {
   path: string;
   exact: boolean;
   name: string;
-  component: React.LazyExoticComponent<React.FC> | React.FC | typeof Room;
+  component: React.LazyExoticComponent<React.FC> | React.FC;
 }
 
 const routebases: Array<RouteBase> = [
