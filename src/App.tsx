@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { ThemeProvider } from '@material-ui/styles';
 import { theme } from './config/theme';
 import { Routes } from './config/route';
-import { resolve } from 'node:path';
+import { useStateWithCallbackLazy } from 'use-state-with-callback';
 
 interface AppState {
   socket: SocketIOClient.Socket | null;
@@ -14,7 +14,7 @@ export interface PageProps {
 }
 
 const App: React.FC = () => {
-  const [socket, setSocket] = React.useState<AppState['socket']>(null);
+  const [socket, setSocket] = useStateWithCallbackLazy<AppState['socket']>(null);
 
   // websocketに接続し、socket clientを返却
   const getSocket = (): Promise<SocketIOClient.Socket> => {
@@ -26,9 +26,10 @@ const App: React.FC = () => {
         client.on('connect', () => {
           console.log('connected');
           // 別ページからも参照できるようにstateにセット
-          setSocket(client);
-          // 接続が接続が成功した際にsocket clientを返却
-          return resolve(client);
+          setSocket(client, () => {
+            // 接続が接続が成功した際にsocket clientを返却
+            return resolve(client);
+          });
         });
       } else {
         console.log('接続済み');
