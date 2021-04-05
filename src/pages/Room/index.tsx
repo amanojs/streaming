@@ -26,6 +26,9 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         }
       }
     });
+    return () => {
+      props.clearSocket();
+    };
   }, [mountKeeper]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
