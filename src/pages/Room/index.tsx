@@ -15,6 +15,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   React.useEffect(() => {
     props.getSocket().then((socket) => {
+      // 後でここにルーム存在確認処理を追加
       // ルーム作成ではない場合
       if (!room.roomId) {
         // パラメータからroom_idを取得
@@ -24,6 +25,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
           // 後でユーザネーム登録処理と一緒に切り離す
           joinRoom(socket, { roomId });
         }
+      } else {
+        setUpSocketListenner(socket);
       }
     });
     return () => {
@@ -36,10 +39,21 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       console.log('入出', res);
       if (res) {
         dispach(roomModule.actions.setRoom({ roomId: option.roomId }));
+        setUpSocketListenner(socket);
       } /*  else {
         alert('入出に失敗しました');
         history.push('/');
       } */
+    });
+  };
+
+  const setUpSocketListenner = (socket: SocketIOClient.Socket) => {
+    socket.on('youtube_pause', (timer: number) => {
+      console.log('listen!pause!', timer);
+    });
+
+    socket.on('youtube_play', (time: number) => {
+      console.log(time);
     });
   };
 
