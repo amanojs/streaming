@@ -11,6 +11,7 @@ interface AppState {
 
 export interface PageProps {
   getSocket(): Promise<SocketIOClient.Socket>;
+  clearSocket(): void;
 }
 
 const App: React.FC = () => {
@@ -26,22 +27,27 @@ const App: React.FC = () => {
         client.on('connect', () => {
           console.log('connected');
           // 別ページからも参照できるようにstateにセット
-          setSocket(client, () => {
+          setSocket(client, function () {
             // 接続が接続が成功した際にsocket clientを返却
-            return resolve(client);
+            resolve(client);
           });
         });
       } else {
         console.log('接続済み');
-        // 接続済みだった場合stateのsocket clietnを返却
+        // 接続済みだった場合stateのsocket clientを返却
         return resolve(socket);
       }
     });
   };
 
+  const clearSocket = (): void => {
+    setSocket(null, () => {
+      console.log('clear socket');
+    });
+  };
   return (
     <ThemeProvider theme={theme}>
-      <Routes getSocket={getSocket} />
+      <Routes getSocket={getSocket} clearSocket={clearSocket} />
     </ThemeProvider>
   );
 };
