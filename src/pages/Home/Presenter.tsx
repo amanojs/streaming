@@ -3,8 +3,9 @@ import { Grid } from '@material-ui/core';
 import { CreateForm } from '../../components/CreateForm';
 import { makeStyles } from '@material-ui/core/styles';
 import './main.css';
+import { PageProps } from '../../App';
 
-export const Presenter: React.FC = () => {
+export const Presenter: React.FC<PageProps> = (props: PageProps) => {
   const useStyles = makeStyles({
     baseGrid: {
       position: 'relative',
@@ -20,7 +21,7 @@ export const Presenter: React.FC = () => {
           <Grid item className="logo" xs={12}>
             <span>S</span>treaming!!
           </Grid>
-          <CreateForm width="100%" />
+          <CreateForm width="100%" setSocketHandler={props.getSocket} />
         </Grid>
       </Grid>
       <div className="wave"></div>

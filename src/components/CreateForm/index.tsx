@@ -4,6 +4,7 @@ import { ContainerProps as Input } from '../InputText';
 
 export interface ContainerProps {
   width: string;
+  setSocketHandler(): Promise<SocketIOClient.Socket | null>;
 }
 
 export interface InputSub extends Input {
@@ -60,9 +61,16 @@ export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
     return errorFlag;
   };
 
-  const submitEvent = () => {
+  const submitEvent = async () => {
     if (validateAll()) {
-      return;
+      return console.log('aaa');
+    }
+    const socket = await props.setSocketHandler();
+    console.log(socket);
+    if (socket) {
+      socket.emit('create_room', 'takashi', (res: any) => {
+        console.log(res);
+      });
     }
     console.log('submit');
   };

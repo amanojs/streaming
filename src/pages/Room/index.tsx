@@ -1,11 +1,11 @@
 import * as React from 'react';
-import io from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import roomModule, { RoomState } from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
+import { PageProps } from '../../App';
 
-const Room: React.FC = () => {
+const Room: React.FC<PageProps> = (props: PageProps) => {
   const [mount, mountKeeper] = React.useState(null);
   const room = useSelector((state: State) => state.room);
   const dispach = useDispatch();
