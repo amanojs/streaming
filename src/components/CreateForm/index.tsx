@@ -1,9 +1,14 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import roomModule from '../../store/modules/roomModule';
+import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { ContainerProps as Input } from '../InputText';
 
 export interface ContainerProps {
   width: string;
+  setSocketHandler(): Promise<SocketIOClient.Socket | null>;
 }
 
 export interface InputSub extends Input {
@@ -19,6 +24,8 @@ export interface InputSub extends Input {
 
 export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
   const [userName, setUserName] = React.useState({ value: '', error: false, msg: '' });
+  const dispach = useDispatch();
+  const history = useHistory();
 
   const inputs: InputSub[] = [
     {
@@ -60,11 +67,21 @@ export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
     return errorFlag;
   };
 
-  const submitEvent = () => {
+  const submitEvent = async () => {
     if (validateAll()) {
-      return;
+      return console.log('aaa');
     }
-    console.log('submit');
+    const socket = await props.setSocketHandler();
+    console.log(socket);
+    if (socket) {
+      socket.emit('create_room', userName, (res: { result: boolean; room_id: string }) => {
+        console.log(res);
+        if (res.result) {
+          dispach(roomModule.actions.setRoom({ roomId: res.room_id }));
+          history.push('/room' + '?room_id=' + res.room_id);
+        }
+      });
+    }
   };
 
   return <Presenter width={props.width} inputs={inputs} submitEvent={submitEvent} />;
