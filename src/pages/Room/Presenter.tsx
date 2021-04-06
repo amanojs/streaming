@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { YoutubeController } from '../../components/YoutubeController';
+import { YoutubeWrap } from '../../components/YoutubeWrap';
 
 export const Presenter: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ export const Presenter: React.FC = () => {
         <div>header</div>
       </div>
       <Box>
-        <YoutubeController />
+        <YoutubeWrap />
       </Box>
     </React.Fragment>
   );
