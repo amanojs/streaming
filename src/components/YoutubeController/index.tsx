@@ -8,7 +8,7 @@ import { YouTubePlayer } from 'youtube-player/dist/types';
 import { PresenterProps } from './Presenter';
 
 export const YoutubeController: React.FC = () => {
-  const [videoId, setVideoId] = React.useState<string>('M1UuHL6U7Zk');
+  const [videoId, setVideoId] = React.useState<string>('b6-2P8RgT0A');
   const youtubeRef = React.createRef<YouTube>();
   const socket = React.useContext(SocketContext);
   const room = useSelector((state: State) => state.room);
@@ -69,14 +69,20 @@ export const YoutubeController: React.FC = () => {
       socket.emit('youtube_pause', target.getCurrentTime());
     },
     onReady: (event: { target: YouTubePlayer }) => {
+      event.target.mute();
       event.target.getOptions();
       event.target.playVideo();
       window.setTimeout(
         (target: YouTubePlayer) => {
           target.pauseVideo();
           target.seekTo(0, true);
+          // FireFoxの場合
+          const agent = window.navigator.userAgent.toLowerCase();
+          if (!agent.match('firefox')) {
+            event.target.unMute();
+          }
         },
-        200,
+        500,
         event.target
       );
     },
