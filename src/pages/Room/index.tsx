@@ -34,7 +34,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   }, [mountKeeper]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
-    socket.emit('join_room', { room_id: option.roomId, username: 'guest' }, (res: boolean) => {
+    socket.emit('join_room', { room_id: option.roomId, user_name: 'guest' }, (res: boolean) => {
       console.log('入出', res);
       if (res) {
         dispach(roomModule.actions.setRoom({ roomId: option.roomId, isOwner: false }));
