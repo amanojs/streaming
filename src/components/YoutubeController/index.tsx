@@ -37,6 +37,9 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   }, [props.youtubeDisp]);
 
   React.useEffect(() => {
+    if (props.youtubeDisp) {
+      setDuration(props.youtubeDisp?.getDuration());
+    }
     statusCheck(props.videoStatus);
   }, [props.videoStatus]);
 

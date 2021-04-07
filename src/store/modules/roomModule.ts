@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface RoomState {
   roomId: string;
+  isOwner: boolean;
 }
 
 const roomInitialState: RoomState = {
-  roomId: ''
+  roomId: '',
+  isOwner: false
 };
 
 // createSliceメソッドを使ってactionsとreducersを生成
