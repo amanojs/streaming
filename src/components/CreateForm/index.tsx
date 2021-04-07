@@ -76,7 +76,7 @@ export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
       socket.emit('create_room', userName, (res: { result: boolean; room_id: string }) => {
         console.log(res);
         if (res.result) {
-          dispach(roomModule.actions.setRoom({ roomId: res.room_id }));
+          dispach(roomModule.actions.setRoom({ roomId: res.room_id, isOwner: true }));
           history.push('/room' + '?room_id=' + res.room_id);
         }
       });

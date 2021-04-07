@@ -52,10 +52,56 @@ export const YoutubeWrap: React.FC = () => {
       getPlayer()?.playVideo();
       console.log('listen!play!', time, youtubeRef);
     });
+
+    /* socket.on('request_playing_data', (participant_id: string) => {
+      console.log('request_playing_data', participant_id);
+      const playingData: { movie_id?: string; time: number; isPlaying: boolean } = {
+        time: getPlayer()?.getCurrentTime() || 0.0,
+        isPlaying: statusCheck(videoStatus)
+      };
+      if (videoId) {
+        playingData.movie_id = videoId;
+      }
+      const payload = {
+        socket_id: participant_id,
+        playingData: playingData
+      };
+      socket.emit('send_playing_data', payload);
+    });
+
+    socket.on('new_playing_data', (res: any) => {
+      console.log('newplayingData', res);
+    }); */
   };
 
   const getPlayer = (): YouTubePlayer | undefined => {
     return youtubeRef.current?.getInternalPlayer();
+  };
+
+  const statusCheck = (status: number): boolean => {
+    // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
+    let isPlaying = false;
+    switch (status) {
+      case -1: // 未開始
+        isPlaying = false;
+        break;
+      case 0: // 終了
+        isPlaying = false;
+        break;
+      case 1: // 再生中
+        isPlaying = true;
+        break;
+      case 2: // 停止
+        isPlaying = false;
+        break;
+      case 3: // バッファリング中
+        isPlaying = false;
+        break;
+      case 5: // 頭出し済み
+        isPlaying = false;
+        break;
+    }
+    return isPlaying;
   };
 
   // react-youtubeコンポーネントの設定
