@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 
 export const Presenter: React.FC = () => {
   return (
     <React.Fragment>
-      <div>
+      <div style={{ background: '#fff' }}>
         <div>header</div>
       </div>
-      <Box>
-        <YoutubeWrap />
-      </Box>
+      <Grid container justify="center">
+        <Grid item xs={12}>
+          <Box>
+            <YoutubeWrap />
+          </Box>
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 };

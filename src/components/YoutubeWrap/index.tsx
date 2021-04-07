@@ -8,6 +8,9 @@ import { Presenter, PresenterProps } from './Presenter';
 
 export const YoutubeWrap: React.FC = () => {
   const [videoId, setVideoId] = React.useState<string>('b6-2P8RgT0A');
+  const [youtubeDisp, setDisp] = React.useState<PresenterProps['youtubeDisp']>(undefined);
+  const [videoStatus, setVideoStatus] = React.useState<number>(-1);
+
   const youtubeRef = React.createRef<YouTube>();
   const socket = React.useContext(SocketContext);
   const room = useSelector((state: State) => state.room);
@@ -21,7 +24,7 @@ export const YoutubeWrap: React.FC = () => {
         // youtubeSync(socket);
       }
     }
-  }, [socket, room.roomId]);
+  }, [socket, room.roomId, youtubeRef]);
 
   /* const youtubeSync = (socket: SocketIOClient.Socket): void => {
     socket.emit('youtube_sync', (res: { video_id: string; time: number }) => {
@@ -57,7 +60,6 @@ export const YoutubeWrap: React.FC = () => {
 
   // react-youtubeコンポーネントの設定
   const player: PresenterProps['player'] = {
-    ref: youtubeRef,
     videoId: videoId,
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       if (!socket) return;
@@ -71,6 +73,7 @@ export const YoutubeWrap: React.FC = () => {
       event.target.mute();
       event.target.getOptions();
       event.target.playVideo();
+      setDisp(event.target);
       window.setTimeout(
         (target: YouTubePlayer) => {
           target.pauseVideo();
@@ -87,18 +90,26 @@ export const YoutubeWrap: React.FC = () => {
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       console.log('onStateChange');
-      console.log(target.getCurrentTime());
       // target.set
       console.log(data);
+      setVideoStatus(data);
     },
+    // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
     opts: {
+      width: '100%',
+      height: '700px',
       playerVars: {
         controls: 0,
         rel: 0,
-        playsinline: 1
+        playsinline: 1,
+        fs: 0,
+        disablekb: 1,
+        modestbranding: 1
       }
     }
   };
 
-  return <Presenter player={player} />;
+  // コントローラメソッド
+
+  return <Presenter player={player} youtubeRef={youtubeRef} videoStatus={videoStatus} youtubeDisp={youtubeDisp} />;
 };

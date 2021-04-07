@@ -5,6 +5,7 @@ import roomModule from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
+import './main.css';
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [mount, mountKeeper] = React.useState(null);
