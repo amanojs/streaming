@@ -5,6 +5,7 @@ import roomModule from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
+import './main.css';
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [mount, mountKeeper] = React.useState(null);
@@ -15,6 +16,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   React.useEffect(() => {
     props.getSocket().then((socket) => {
+      // 後でここにルーム存在確認処理を追加
       // ルーム作成ではない場合
       if (!room.roomId) {
         // パラメータからroom_idを取得
@@ -26,6 +28,9 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         }
       }
     });
+    return () => {
+      props.clearSocket();
+    };
   }, [mountKeeper]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {

@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import roomModule from '../../store/modules/roomModule';
-import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { ContainerProps as Input } from '../InputText';
 
 export interface ContainerProps {
   width: string;
-  setSocketHandler(): Promise<SocketIOClient.Socket | null>;
+  getSocket(): Promise<SocketIOClient.Socket>;
 }
 
 export interface InputSub extends Input {
@@ -69,9 +68,9 @@ export const CreateForm: React.FC<ContainerProps> = (props: ContainerProps) => {
 
   const submitEvent = async () => {
     if (validateAll()) {
-      return console.log('aaa');
+      return console.log('未入力の内容があります');
     }
-    const socket = await props.setSocketHandler();
+    const socket = await props.getSocket();
     console.log(socket);
     if (socket) {
       socket.emit('create_room', userName, (res: { result: boolean; room_id: string }) => {

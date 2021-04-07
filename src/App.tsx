@@ -14,6 +14,8 @@ export interface PageProps {
   clearSocket(): void;
 }
 
+export const SocketContext = React.createContext<AppState['socket']>(null);
+
 const App: React.FC = () => {
   const [socket, setSocket] = useStateWithCallbackLazy<AppState['socket']>(null);
 
@@ -33,7 +35,6 @@ const App: React.FC = () => {
           });
         });
       } else {
-        console.log('接続済み');
         // 接続済みだった場合stateのsocket clientを返却
         return resolve(socket);
       }
@@ -41,13 +42,17 @@ const App: React.FC = () => {
   };
 
   const clearSocket = (): void => {
+    socket?.disconnect();
     setSocket(null, () => {
       console.log('clear socket');
     });
   };
+
   return (
     <ThemeProvider theme={theme}>
-      <Routes getSocket={getSocket} clearSocket={clearSocket} />
+      <SocketContext.Provider value={socket}>
+        <Routes getSocket={getSocket} clearSocket={clearSocket} />
+      </SocketContext.Provider>
     </ThemeProvider>
   );
 };

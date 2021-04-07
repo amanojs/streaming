@@ -21,7 +21,7 @@ export const Presenter: React.FC<PageProps> = (props: PageProps) => {
           <Grid item className="logo" xs={12}>
             <span>S</span>treaming!!
           </Grid>
-          <CreateForm width="100%" setSocketHandler={props.getSocket} />
+          <CreateForm width="100%" getSocket={props.getSocket} />
         </Grid>
       </Grid>
       <div className="wave"></div>
