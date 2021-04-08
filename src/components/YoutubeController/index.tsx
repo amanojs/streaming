@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
-import { SocketContext } from '../../App';
 import YouTube from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 //import { PresenterProps } from './Presenter';
 
 export interface YoutubeControllerProps {
+  socket: SocketIOClient.Socket;
   youtubeDisp: YouTubePlayer | undefined;
   videoStatus: number;
 }
@@ -16,8 +16,6 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   const [timed, setTimed] = React.useState<number>(0);
   const [duration, setDuration] = React.useState<number>(0);
   const [statusIcon, setStatusIcon] = React.useState<'play' | 'pause'>('pause');
-
-  const socket = React.useContext(SocketContext);
   let checkTimer: NodeJS.Timeout | null = null;
 
   React.useEffect(() => {
@@ -27,7 +25,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
         (props) => {
           setTimed(props.youtubeDisp.getCurrentTime());
         },
-        50,
+        150,
         props
       );
     }
@@ -47,7 +45,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
 
   const sliderOnChange = (changedtime: MouseEvent, value: number | number[]) => {
     if (props.youtubeDisp) {
-      socket?.emit('youtube_seek', value);
+      props.socket?.emit('youtube_seek', value);
       props.youtubeDisp.seekTo(Number(value), true);
       setTimed(Number(value));
     }

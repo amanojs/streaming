@@ -6,7 +6,7 @@ import { YoutubeControllerProps } from '../YoutubeController';
 import { Box, Grid } from '@material-ui/core';
 
 export interface PresenterProps {
-  youtubeRef: React.RefObject<YouTube>;
+  socket: SocketIOClient.Socket;
   player: {
     videoId: string;
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => void;
@@ -32,8 +32,8 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         {/* 最大化の場合は↓を変更 */}
         <Grid item xs={11}>
           <Box paddingY={3}>
-            <YouTube {...props.player} ref={props.youtubeRef} />
-            <YoutubeController videoStatus={props.videoStatus} youtubeDisp={props.youtubeDisp} />
+            <YouTube {...props.player} />
+            <YoutubeController socket={props.socket} videoStatus={props.videoStatus} youtubeDisp={props.youtubeDisp} />
           </Box>
         </Grid>
       </Grid>

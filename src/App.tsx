@@ -14,8 +14,6 @@ export interface PageProps {
   clearSocket(): void;
 }
 
-export const SocketContext = React.createContext<AppState['socket']>(null);
-
 const App: React.FC = () => {
   const [socket, setSocket] = useStateWithCallbackLazy<AppState['socket']>(null);
 
@@ -50,9 +48,7 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <SocketContext.Provider value={socket}>
-        <Routes getSocket={getSocket} clearSocket={clearSocket} />
-      </SocketContext.Provider>
+      <Routes getSocket={getSocket} clearSocket={clearSocket} />
     </ThemeProvider>
   );
 };
