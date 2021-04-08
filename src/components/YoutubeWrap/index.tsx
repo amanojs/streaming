@@ -34,7 +34,7 @@ export const YoutubeWrap: React.FC = () => {
   // socket client Listennerを設定
   const setUpSocketListenner = () => {
     if (!socket) return;
-    const events = ['youtube_pause', 'youtube_play', 'request_playing_data', 'new_playing_data'];
+    const events = ['youtube_pause', 'youtube_play', 'youtube_seek', 'request_playing_data', 'new_playing_data'];
     for (const event of events) {
       socket.off(event);
     }
@@ -47,6 +47,10 @@ export const YoutubeWrap: React.FC = () => {
     socket.on('youtube_play', (time: number) => {
       getPlayer()?.playVideo();
       console.log('listen!play!', time, youtubeRef);
+    });
+
+    socket.on('youtube_seek', (time: number) => {
+      getPlayer()?.seekTo(time, true);
     });
 
     socket.on('request_playing_data', async (participant_id: string) => {
