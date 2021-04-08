@@ -13,23 +13,9 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   const socket = props.socket;
   const [youtubeDisp, setDisp] = React.useState<PresenterProps['youtubeDisp']>(undefined); // youtube target
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
-  const [playingData, setPlayingData] = React.useState<{ movie_id?: string; time: number; isPlaying: boolean }>({
-    time: 0,
-    isPlaying: false
-  });
   const [candidateId, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
   // const room = useSelector((state: State) => state.room);
-
-  React.useEffect(() => {
-    socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
-      console.log('newplayingData', res);
-      if (res.movie_id) {
-        setVideoId(res.movie_id);
-      }
-      setPlayingData(res);
-    });
-  }, []);
 
   React.useEffect(() => {
     setUpSocketListenner();
@@ -37,8 +23,8 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
 
   // socket client Listennerを設定
   const setUpSocketListenner = () => {
-    if (!socket) return;
-    const events = ['youtube_pause', 'youtube_play', 'youtube_seek', 'request_playing_data'];
+    if (!youtubeDisp) return;
+    const events = ['youtube_pause', 'youtube_play', 'youtube_seek', 'request_playing_data', 'new_playing_data'];
     for (const event of events) {
       socket.off(event);
     }
@@ -73,6 +59,17 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
         playingData: playingData
       };
       socket.emit('send_playing_data', payload);
+    });
+
+    socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
+      console.log('newplayingData', res);
+      if (res.movie_id) {
+        setVideoId(res.movie_id);
+      }
+      if (res.isPlaying) {
+        youtubeDisp.playVideo();
+      }
+      youtubeDisp.seekTo(res.time, true);
     });
   };
 
@@ -123,14 +120,12 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       target.playVideo();
       window.setTimeout(() => {
         target.pauseVideo();
-        target.seekTo(playingData.time, true);
+        target.seekTo(0, true);
+        socket.emit('youtube_sync');
         // エージェントごとの処理
         const agent = window.navigator.userAgent.toLowerCase();
         if (!agent.match('firefox')) {
           target.unMute();
-        }
-        if (playingData.isPlaying) {
-          target.playVideo();
         }
         window.setTimeout(() => {
           setIsFirst(false);
