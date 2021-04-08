@@ -16,6 +16,8 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   const [timed, setTimed] = React.useState<number>(0);
   const [duration, setDuration] = React.useState<number>(0);
   const [statusIcon, setStatusIcon] = React.useState<'play' | 'pause'>('pause');
+
+  const socket = React.useContext(SocketContext);
   let checkTimer: NodeJS.Timeout | null = null;
 
   React.useEffect(() => {
@@ -45,6 +47,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
 
   const sliderOnChange = (changedtime: MouseEvent, value: number | number[]) => {
     if (props.youtubeDisp) {
+      socket?.emit('youtube_seek', value);
       props.youtubeDisp.seekTo(Number(value), true);
       setTimed(Number(value));
     }
