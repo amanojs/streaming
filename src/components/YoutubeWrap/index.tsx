@@ -15,6 +15,7 @@ export const YoutubeWrap: React.FC = () => {
     isPlaying: false
   });
   const [candidateId, setCandidate] = React.useState<string>('');
+  const [isFirst, setIsFirst] = React.useState<boolean>(true);
 
   const youtubeRef = React.createRef<YouTube>();
   const socket = React.useContext(SocketContext);
@@ -112,11 +113,11 @@ export const YoutubeWrap: React.FC = () => {
   const player: PresenterProps['player'] = {
     videoId: videoId,
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket) return;
+      if (!socket || isFirst) return;
       socket.emit('youtube_play', target.getCurrentTime());
     },
     onPause: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket) return;
+      if (!socket || isFirst) return;
       socket.emit('youtube_pause', target.getCurrentTime());
     },
     onReady: (event: { target: YouTubePlayer }) => {
@@ -133,6 +134,7 @@ export const YoutubeWrap: React.FC = () => {
           } else {
             event.target.pauseVideo();
           }
+          setIsFirst(false);
         },
         500,
         event.target
