@@ -8,13 +8,23 @@ import { Presenter, PresenterProps } from './Presenter';
 
 export const YoutubeWrap: React.FC = () => {
   const [videoId, setVideoId] = React.useState<string>('');
+
+  // YoutubeControllerに渡すYoutubeイベント
   const [youtubeDisp, setDisp] = React.useState<PresenterProps['youtubeDisp']>(undefined);
+
+  // YouTubeコンポーネントのステータスが変更された時に変更される
   const [videoStatus, setVideoStatus] = React.useState<number>(-1);
+
   const [playingData, setPlayingData] = React.useState<{ movie_id?: string; time: number; isPlaying: boolean }>({
     time: 0,
     isPlaying: false
   });
+
+  // 動画URL入力フォームの値
   const [candidateId, setCandidate] = React.useState<string>('');
+
+  // 参加時かどうかのフラグ
+  const [isFirst, setIsFirst] = React.useState<boolean>(true);
 
   const youtubeRef = React.createRef<YouTube>();
   const socket = React.useContext(SocketContext);
@@ -41,12 +51,12 @@ export const YoutubeWrap: React.FC = () => {
     socket.on('youtube_pause', (time: number) => {
       getPlayer()?.pauseVideo();
       getPlayer()?.seekTo(time, true);
-      console.log('listen!pause!', time, getPlayer());
+      // console.log('listen!pause!', time, getPlayer());
     });
 
     socket.on('youtube_play', (time: number) => {
       getPlayer()?.playVideo();
-      console.log('listen!play!', time, youtubeRef);
+      // console.log('listen!play!', time, youtubeRef);
     });
 
     socket.on('youtube_seek', (time: number) => {
@@ -82,6 +92,7 @@ export const YoutubeWrap: React.FC = () => {
     return youtubeRef.current?.getInternalPlayer();
   };
 
+  // ステータスナンバーから再生中か停止中かを返す
   const statusCheck = (status: number): boolean => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
     let isPlaying = false;
@@ -112,11 +123,11 @@ export const YoutubeWrap: React.FC = () => {
   const player: PresenterProps['player'] = {
     videoId: videoId,
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket) return;
+      if (!socket || isFirst) return;
       socket.emit('youtube_play', target.getCurrentTime());
     },
     onPause: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket) return;
+      if (!socket || isFirst) return;
       socket.emit('youtube_pause', target.getCurrentTime());
     },
     onReady: (event: { target: YouTubePlayer }) => {
@@ -133,6 +144,7 @@ export const YoutubeWrap: React.FC = () => {
           } else {
             event.target.pauseVideo();
           }
+          setIsFirst(false);
         },
         500,
         event.target
@@ -145,7 +157,6 @@ export const YoutubeWrap: React.FC = () => {
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       console.log('onStateChange');
-      // target.set
       console.log(data);
       setVideoStatus(data);
     },
