@@ -15,7 +15,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
   const [candidateId, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
-  // const room = useSelector((state: State) => state.room);
+  const room = useSelector((state: State) => state.room);
 
   React.useEffect(() => {
     setUpSocketListenner();
@@ -36,7 +36,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
 
     socket.on('youtube_play', (time: number) => {
       youtubeDisp?.playVideo();
-      //console.log('listen!play!', time, youtubeDisp);
+      // console.log('listen!play!', time, youtubeDisp);
     });
 
     socket.on('youtube_seek', (time: number) => {
@@ -66,10 +66,10 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       if (res.movie_id) {
         setVideoId(res.movie_id);
       }
+      youtubeDisp.seekTo(res.time, true);
       if (res.isPlaying) {
         youtubeDisp.playVideo();
       }
-      youtubeDisp.seekTo(res.time, true);
     });
   };
 
@@ -114,6 +114,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
       target.mute();
+      target.setVolume(30);
       target.getOptions();
       setDisp(target);
       target.cueVideoById('b6-2P8RgT0A');
@@ -121,14 +122,16 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        socket.emit('youtube_sync');
         // エージェントごとの処理
         const agent = window.navigator.userAgent.toLowerCase();
-        if (!agent.match('firefox')) {
+        if (agent.match('edg')) {
           target.unMute();
         }
         window.setTimeout(() => {
           setIsFirst(false);
+          if (!room.isOwner) {
+            socket.emit('youtube_sync');
+          }
         }, 200);
       }, 1000);
     },

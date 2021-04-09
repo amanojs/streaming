@@ -4,6 +4,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { theme } from './config/theme';
 import { Routes } from './config/route';
 import { useStateWithCallbackLazy } from 'use-state-with-callback';
+import { SnackbarProvider } from 'notistack';
 
 interface AppState {
   socket: SocketIOClient.Socket | null;
@@ -48,7 +49,9 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes getSocket={getSocket} clearSocket={clearSocket} />
+      <SnackbarProvider maxSnack={1}>
+        <Routes getSocket={getSocket} clearSocket={clearSocket} />
+      </SnackbarProvider>
     </ThemeProvider>
   );
 };
