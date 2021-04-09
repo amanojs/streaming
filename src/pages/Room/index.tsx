@@ -38,6 +38,16 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     };
   }, [mountKeeper]);
 
+  React.useEffect(() => {
+    if (!socket) return;
+    socket.on('user_joined', (user: { id: string; name: string }) => {
+      sendNotifiction(user.name + 'が入出しました', 'success');
+    });
+    socket.on('user_left', (user: { id: string; name: string }) => {
+      sendNotifiction(user.name + 'が退出しました', 'error');
+    });
+  }, [socket]);
+
   const joinRoom = (socket_rec: SocketIOClient.Socket, option: { roomId: string }) => {
     if (!socket_rec) return console.log('room :', 'socketがnullだよ', socket_rec);
     socket_rec.emit('join_room', { room_id: option.roomId, user_name: 'guest' }, (res: boolean) => {
@@ -57,7 +67,6 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     return value;
   };
 
-  // sendNotifiction('○○○○が退出しました', 'error');
   const sendNotifiction = (message: string, variant: VariantType) => {
     if (screen.width < 600) return;
     enqueueSnackbar(message, {
