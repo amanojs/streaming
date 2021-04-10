@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Slider, IconButton, withStyles } from '@material-ui/core';
-import { VolumeOff, VolumeDown, VolumeUp } from '@material-ui/icons';
+import { VolumeOff, VolumeUp } from '@material-ui/icons';
 
 interface PresenterProps {
   isMute: boolean;
@@ -11,8 +11,10 @@ interface PresenterProps {
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', width: '140px' }}>
-      <IconButton onClick={props.onClick}>{props.isMute ? <VolumeOff></VolumeOff> : <VolumeUp></VolumeUp>}</IconButton>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <IconButton color="secondary" onClick={props.onClick}>
+        {props.isMute ? <VolumeOff></VolumeOff> : <VolumeUp></VolumeUp>}
+      </IconButton>
       <VolumeSlider
         valueLabelDisplay="off"
         step={0.001}
@@ -22,7 +24,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         onChange={props.onChange}
         style={{
           width: '100%',
-          marginLeft: '10px'
+          marginLeft: '1px'
         }}
       ></VolumeSlider>
     </div>

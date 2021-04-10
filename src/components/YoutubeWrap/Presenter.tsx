@@ -3,6 +3,7 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 import { YoutubeController } from '../YoutubeController';
 import { Box, Grid } from '@material-ui/core';
+import './main.css';
 
 export interface PresenterProps {
   player: YouTubeProps;
@@ -23,9 +24,9 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
     <React.Fragment>
       <Grid container justify="center">
         {/* 最大化の場合は↓を変更 */}
-        <Grid item xs={11}>
+        <Grid item xs={10}>
           <Box paddingY={3}>
-            <YouTube {...props.player} />
+            <YouTube {...props.player} className="youtube_display" />
             <YoutubeController {...props.controller} />
           </Box>
         </Grid>
