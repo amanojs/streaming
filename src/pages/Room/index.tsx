@@ -39,11 +39,11 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   React.useEffect(() => {
     if (!socket) return;
-    socket.on('user_joined', (user: { id: string; name: string }) => {
-      sendNotifiction(user.name + 'が入出しました', 'success');
+    socket.on('user_joined', (res: { user: { id: string; name: string } }) => {
+      sendNotifiction(res.user.name + 'が入出しました', 'success');
     });
-    socket.on('user_left', (user: { id: string; name: string }) => {
-      sendNotifiction(user.name + 'が退出しました', 'error');
+    socket.on('user_left', (res: { user: { id: string; name: string } }) => {
+      sendNotifiction(res.user.name + 'が退出しました', 'error');
     });
   }, [socket]);
 
