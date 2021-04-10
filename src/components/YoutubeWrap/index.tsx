@@ -10,14 +10,18 @@ interface YoutubeWrapProps {
 }
 
 export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps) => {
-  const [videoId, setVideoId] = React.useState<string>('');
   const socket = props.socket;
+  const room = useSelector((state: State) => state.room);
   const [youtubeDisp, setDisp] = React.useState<YouTubePlayer | undefined>(undefined); // youtube target
+  const [videoId, setVideoId] = React.useState<string>('');
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
   const [candidateId, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
-  const room = useSelector((state: State) => state.room);
+  const [volume, setVolume] = React.useState<number>(0); // ボリューム
+  const [volumeLog, setVolumeLog] = React.useState<number>(0); // 変更前のボリューム
+  const [isMuted, setIsMuted] = React.useState<boolean>(true); // ミュートフラグ
 
+  // onReady
   React.useEffect(() => {
     setUpSocketListenner();
   }, [youtubeDisp]);
@@ -74,6 +78,11 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
         youtubeDisp.seekTo(res.time, true);
       }
     });
+
+    // ボリューム情報のセット
+    const defaultVolume = youtubeDisp.getVolume();
+    changeVolume(defaultVolume); // ボリュームを取得
+    setVolumeLog(defaultVolume); // ボリュームを保存
   };
 
   // ステータスナンバーから再生中か停止中かを返す
@@ -116,15 +125,16 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     },
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
-      target.mute();
-      target.getOptions();
       setDisp(target);
+      target.mute();
+      mute();
       target.cueVideoById('b6-2P8RgT0A');
       target.playVideo();
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
         target.unMute();
+        unMute();
         if (!room.isOwner) {
           socket.emit('youtube_sync');
         }
@@ -156,11 +166,35 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     youtubeDisp?.loadVideoById(candidateId);
   };
 
+  /** ボリュームを変更する */
+  const changeVolume = (value: number) => {
+    youtubeDisp?.setVolume(value);
+    setVolume(value);
+  };
+
+  /** ミュート時の処理 */
+  const mute = () => {
+    setIsMuted(true);
+    changeVolume(0);
+    setVolumeLog(volume);
+    youtubeDisp?.mute();
+  };
+
+  /** アンミュート時の処理 */
+  const unMute = () => {
+    setIsMuted(false);
+    youtubeDisp?.unMute();
+    volumeLog > 30 ? changeVolume(volumeLog) : changeVolume(30);
+  };
+
   return (
     <React.Fragment>
       <input type="text" value={candidateId} onChange={(e) => setCandidate(e.target.value)} />
       <button onClick={() => handler()}>変更</button>
-      <Presenter player={player} controller={{ socket, youtubeDisp, videoStatus }} />
+      <Presenter
+        player={player}
+        controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
+      />
     </React.Fragment>
   );
 };

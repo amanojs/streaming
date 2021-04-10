@@ -10,17 +10,24 @@ export interface YoutubeControllerProps {
   socket: SocketIOClient.Socket;
   youtubeDisp: YouTubePlayer | undefined;
   videoStatus: number;
+  volume: number;
+  isMuted: boolean;
+  mute: () => void;
+  unMute: () => void;
+  changeVolume: (num: number) => void;
 }
 
 export const YoutubeController: React.FC<YoutubeControllerProps> = (props: YoutubeControllerProps) => {
   const [timed, setTimed] = React.useState<number>(0);
   const [duration, setDuration] = React.useState<number>(0);
   const [statusIcon, setStatusIcon] = React.useState<'play' | 'pause'>('pause');
+
   let checkTimer: NodeJS.Timeout | null = null;
 
   React.useEffect(() => {
     if (props.youtubeDisp) {
       setDuration(props.youtubeDisp.getDuration());
+
       checkTimer = setInterval(
         (props) => {
           setTimed(props.youtubeDisp.getCurrentTime());
@@ -97,6 +104,23 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
+  /**
+   * ミュート状態の切り替え
+   */
+  const volumeOnClick = () => {
+    props.isMuted ? props.unMute() : props.mute();
+  };
+
+  const volumeSliderOnChange = (e: React.ChangeEvent, value: number | number[]) => {
+    const num = Number(value);
+
+    // ボリュームを変更
+    props.changeVolume(num);
+
+    // ボリュームの値を参照しミュート状態を切り替え
+    num < 1 ? props.mute() : props.isMuted ? props.unMute() : false;
+  };
+
   return (
     <Presenter
       statusIcon={statusIcon}
@@ -105,6 +129,10 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
       duratioin={duration}
       valueLabelFormat={valueLabelFormat}
       playOrPause={playOrPause}
+      volume={props.volume}
+      volumeOnClick={volumeOnClick}
+      volumeSliderOnChange={volumeSliderOnChange}
+      isMute={props.isMuted}
     />
   );
 };
