@@ -4,6 +4,7 @@ import { YouTubePlayer } from 'youtube-player/dist/types';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Slider, IconButton } from '@material-ui/core';
 import { PlayArrow, Pause } from '@material-ui/icons';
+import { Volume } from '../Volume';
 
 export interface PresenterProps {
   statusIcon: 'play' | 'pause';
@@ -12,6 +13,10 @@ export interface PresenterProps {
   sliderOnChange: (e: any, value: any) => void;
   valueLabelFormat: (value: number) => string;
   playOrPause: () => void;
+  isMute: boolean;
+  volumeOnClick: () => any;
+  volumeSliderOnChange: (e: React.ChangeEvent<any>, value: number | number[]) => any;
+  volume: number;
 }
 
 const PrettoSlider = withStyles({
@@ -83,6 +88,14 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           </Grid>
           <Grid item xs={8}>
             <Grid container justify="center">
+              <Grid item>
+                <Volume
+                  isMute={props.isMute}
+                  onChange={props.volumeSliderOnChange}
+                  onClick={props.volumeOnClick}
+                  volume={props.volume}
+                ></Volume>
+              </Grid>
               <Grid item>
                 <IconButton onClick={props.playOrPause}>
                   {props.statusIcon === 'play' ? (

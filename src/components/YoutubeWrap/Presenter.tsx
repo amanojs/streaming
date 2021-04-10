@@ -10,6 +10,11 @@ export interface PresenterProps {
     socket: SocketIOClient.Socket;
     youtubeDisp: YouTubePlayer | undefined;
     videoStatus: number;
+    volume: number;
+    isMuted: boolean;
+    changeVolume: (num: number) => void;
+    mute: () => void;
+    unMute: () => void;
   };
 }
 
