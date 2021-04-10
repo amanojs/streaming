@@ -170,7 +170,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   const changeVolume = (value: number) => {
     youtubeDisp?.setVolume(value);
     setVolume(value);
-    console.log(value);
   };
 
   /** ミュート時の処理 */
@@ -178,7 +177,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     setIsMuted(true);
     changeVolume(0);
     setVolumeLog(volume);
-    console.log('youtubeDisp', !!youtubeDisp);
     youtubeDisp?.mute();
   };
 

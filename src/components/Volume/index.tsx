@@ -1,28 +1,15 @@
 import * as React from 'react';
+import { Presenter } from './Presenter';
 import { Grid, Slider, IconButton, withStyles } from '@material-ui/core';
 import { VolumeOff, VolumeDown, VolumeUp } from '@material-ui/icons';
 
 export interface VolumeProps {
   isMute: boolean;
   volume: number;
-  onChange: (e: React.ChangeEvent<any>, value: number | number[]) => any;
-  onClick: () => any;
+  onChange: (e: React.ChangeEvent<any>, value: number | number[]) => void;
+  onClick: () => void;
 }
 
 export const Volume: React.FC<VolumeProps> = (props: VolumeProps) => {
-  return (
-    <React.Fragment>
-      <IconButton onClick={props.onClick}>{props.isMute ? <VolumeOff></VolumeOff> : <VolumeUp></VolumeUp>}</IconButton>
-      <VolumeSlider
-        valueLabelDisplay="off"
-        step={0.001}
-        min={0.0}
-        max={100.0}
-        value={props.volume}
-        onChange={props.onChange}
-      ></VolumeSlider>
-    </React.Fragment>
-  );
+  return <Presenter onClick={props.onClick} onChange={props.onChange} isMute={props.isMute} volume={props.volume} />;
 };
-
-const VolumeSlider = withStyles({})(Slider);
