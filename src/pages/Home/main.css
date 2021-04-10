@@ -8,17 +8,6 @@
     background: linear-gradient(45deg, #23d5ab,#23a6d5,#ee7752 );
     background-size: 190% 190%;
 }
-@keyframes gradient {
-0% {
-    background-position: 0% 50%;
-}
-50% {
-    background-position: 100% 50%;
-}
-100% {
-    background-position: 0% 50%;
-}
-}
 
 @keyframes fadein {
 0% {
@@ -42,14 +31,6 @@
 .logo > span{
     font-size: 80px;
     color: #55E6C1;
-}
-
-.create_room_head{
-  text-shadow:1px 0 0 #666,0 1px 0 #666,-1px 0 0 #666,0 -1px 0 #666;
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 0px;
-  color: #fff;
 }
 
 .wave {

@@ -6,16 +6,15 @@ import roomModule from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
-import './main.css';
+import { InputSub } from '../../components/CreateForm';
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(null);
-  const [mount, mountKeeper] = React.useState(null);
-
+  const [nameDialog, setNameDialog] = React.useState<boolean>(false);
+  const [enterId, setEnterId] = React.useState<string>('');
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispach = useDispatch();
-
   const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
@@ -28,15 +27,15 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         const roomId = getParamValue('room_id');
         if (roomId) {
           // ルーム入出処理
-          // 後でユーザネーム登録処理と一緒に切り離す
-          joinRoom(rec_socket, { roomId });
+          setEnterId(roomId);
+          setNameDialog(true);
         }
       }
     });
     return () => {
       props.clearSocket();
     };
-  }, [mountKeeper]);
+  }, []);
 
   React.useEffect(() => {
     if (!socket) return;
@@ -48,12 +47,13 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     });
   }, [socket]);
 
-  const joinRoom = (socket_rec: SocketIOClient.Socket, option: { roomId: string }) => {
-    if (!socket_rec) return console.log('room :', 'socketがnullだよ', socket_rec);
-    socket_rec.emit('join_room', { room_id: option.roomId, user_name: 'guest' }, (res: boolean) => {
+  const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
+    if (!socket) return console.log('room :', 'socketがnullだよ', socket);
+    socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
       console.log('入出', res);
       if (res) {
-        dispach(roomModule.actions.setRoom({ roomId: option.roomId, isOwner: false }));
+        dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
+        setNameDialog(false);
       } /*  else {
         alert('入出に失敗しました');
         history.push('/');
@@ -76,7 +76,53 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     });
   };
 
-  return <Presenter socket={socket} />;
+  // ユーザネーム入力に参照するstate
+  const [userName, setUserName] = React.useState({
+    value: 'Guest',
+    error: false,
+    msg: ''
+  });
+
+  const inputs: InputSub[] = [
+    {
+      label: '',
+      placeholder: '須鳥武 太郎',
+      value: userName.value,
+      error: userName.error,
+      msg: userName.msg,
+      onChange: function (e) {
+        const { error, msg } = this.validate(e.target.value);
+        this.setter({ value: e.target.value, error, msg });
+      },
+      validate: (val) => {
+        const response = { error: false, msg: '' };
+        if (val === '') {
+          response.error = true;
+          response.msg = 'ユーザネームを入力してください';
+        } else if (val.length > 13) {
+          response.error = true;
+          response.msg = '12文字以内で入力してください';
+        }
+        return response;
+      },
+      setter: setUserName
+    }
+  ];
+
+  const enterSubmitHandler = () => {
+    if (!socket) return;
+    console.log('enterSubmitHandler', socket, enterId);
+    joinRoom(socket, { roomId: enterId });
+  };
+
+  return (
+    <Presenter
+      socket={socket}
+      roomId={room.roomId}
+      nameDialog={nameDialog}
+      createForm={{ inputs, onSubmit: enterSubmitHandler }}
+    />
+  );
 };
 
 export default Room;

@@ -1,0 +1,7 @@
+.create_room_head{
+    text-shadow:1px 0 0 #666,0 1px 0 #666,-1px 0 0 #666,0 -1px 0 #666;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 0px;
+    color: #fff;
+}

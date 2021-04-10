@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface RoomState {
   roomId: string;
+  userName: string;
   isOwner: boolean;
 }
 
 const roomInitialState: RoomState = {
   roomId: '',
+  userName: '',
   isOwner: false
 };
 

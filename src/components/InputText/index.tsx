@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Presenter } from './Presenter';
 
-export interface ContainerProps {
+export interface InputTextProps {
   label: string;
   placeholder?: string;
   value: string;
@@ -10,7 +10,7 @@ export interface ContainerProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const InputText: React.FC<ContainerProps> = (props: ContainerProps) => {
+export const InputText: React.FC<InputTextProps> = (props: InputTextProps) => {
   return (
     <Presenter
       error={props.error}

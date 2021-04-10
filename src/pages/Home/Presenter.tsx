@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { Grid } from '@material-ui/core';
-import { CreateForm } from '../../components/CreateForm';
+import { CreateForm, CreateFormProps } from '../../components/CreateForm';
 import { makeStyles } from '@material-ui/core/styles';
 import './main.css';
-import { PageProps } from '../../App';
 
-export const Presenter: React.FC<PageProps> = (props: PageProps) => {
+interface PresenterProps {
+  createForm: {
+    inputs: CreateFormProps['inputs'];
+    onSubmit: CreateFormProps['onSubmit'];
+  };
+}
+
+export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   const useStyles = makeStyles({
     baseGrid: {
       position: 'relative',
@@ -21,7 +27,7 @@ export const Presenter: React.FC<PageProps> = (props: PageProps) => {
           <Grid item className="logo" xs={12}>
             <span>S</span>treaming!!
           </Grid>
-          <CreateForm width="100%" getSocket={props.getSocket} />
+          <CreateForm width="100%" head="ルーム作成" btn="作成" {...props.createForm} />
         </Grid>
       </Grid>
       <div className="wave"></div>
