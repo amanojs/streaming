@@ -2,6 +2,7 @@ import * as React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { PageProps } from '../App';
+import { Header } from '../components/Header';
 
 const Home = React.lazy(() => {
   return Promise.all([import('../pages/Home'), new Promise((resolve) => setTimeout(resolve, 1000))]).then(
@@ -30,6 +31,7 @@ export const Routes: React.FC<PageProps> = (props) => {
   const makeRoute = (routebase: RouteBase) => {
     return (
       <Route path={routebase.path} exact={routebase.exact}>
+        {routebase.path !== '/' ? <Header /> : false}
         <routebase.component {...props} />
       </Route>
     );

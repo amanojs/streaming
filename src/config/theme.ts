@@ -3,8 +3,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#FF6F26',
-      contrastText: '#fff'
+      main: '#fff',
+      contrastText: '#555'
     },
     secondary: {
       main: '#1dd1a1',
