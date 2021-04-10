@@ -6,7 +6,7 @@ import { Presenter } from './Presenter';
  * URLをクリップボードにコピーするボタン
  */
 export const CopyRoomIdButton: React.FC = () => {
-  const [url] = React.useState<string>(window.location.href);
+  const [url] = React.useState<string>(location.href);
   const urlInputRef = React.useRef<HTMLInputElement>(null);
   const { enqueueSnackbar } = useSnackbar();
 
