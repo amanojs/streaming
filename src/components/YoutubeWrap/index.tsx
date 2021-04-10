@@ -66,9 +66,11 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       if (res.movie_id) {
         setVideoId(res.movie_id);
       }
-      youtubeDisp.seekTo(res.time, true);
       if (res.isPlaying) {
+        youtubeDisp.seekTo(res.time + 0.2, true);
         youtubeDisp.playVideo();
+      } else {
+        youtubeDisp.seekTo(res.time, true);
       }
     });
   };
@@ -114,7 +116,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
       target.mute();
-      target.setVolume(30);
       target.getOptions();
       setDisp(target);
       target.cueVideoById('b6-2P8RgT0A');
@@ -122,17 +123,13 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        // エージェントごとの処理
-        const agent = window.navigator.userAgent.toLowerCase();
-        if (agent.match('edg')) {
-          target.unMute();
+        target.unMute();
+        if (!room.isOwner) {
+          socket.emit('youtube_sync');
         }
         window.setTimeout(() => {
           setIsFirst(false);
-          if (!room.isOwner) {
-            socket.emit('youtube_sync');
-          }
-        }, 200);
+        }, 500);
       }, 1000);
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {

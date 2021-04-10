@@ -1,13 +1,13 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
-import { InputText, ContainerProps } from './index';
+import { InputText, InputTextProps } from './index';
 
 export default {
   title: 'Atom/InputText',
   component: InputText
 } as Meta;
 
-const Template: Story<ContainerProps> = (props: ContainerProps) => <InputText {...props} />;
+const Template: Story<InputTextProps> = (props: InputTextProps) => <InputText {...props} />;
 
 export const Test = Template.bind({});
 Test.args = {

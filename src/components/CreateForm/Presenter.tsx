@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Card, Button, Box } from '@material-ui/core';
-import { Home, PlayArrow } from '@material-ui/icons';
 import { InputText } from '../InputText';
 import { InputSub } from './index';
+import './main.css';
 
 export interface PresenterProps {
   width: string;
+  head: string;
+  btn: string;
   inputs: InputSub[];
-  submitEvent: () => void;
+  submitEvent: () => any;
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -32,7 +34,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               lineHeight="0px"
               marginBottom="30px"
             >
-              <span>ルーム作成</span>
+              <span>{props.head}</span>
             </Box>
           </Grid>
           {props.inputs.map((input: InputSub) => {
@@ -51,7 +53,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           })}
           <Grid item xs={12}>
             <Button fullWidth variant="contained" disableElevation color="secondary" onClick={props.submitEvent}>
-              作成
+              {props.btn}
             </Button>
           </Grid>
         </Grid>
