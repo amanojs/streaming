@@ -8,7 +8,7 @@ interface PresenterProps {
   value: string;
   error: boolean;
   msg: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -21,7 +21,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         helperText={props.msg}
         variant="outlined"
         value={props.value}
-        onChange={props.onChange}
+        onChange={(e) => props.onChange(e.target.value)}
         color="secondary"
         placeholder={props.placeholder}
       />

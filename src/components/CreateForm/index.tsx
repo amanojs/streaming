@@ -4,13 +4,6 @@ import { InputTextProps } from '../InputText';
 
 export interface InputSub extends InputTextProps {
   validate: (val: string) => { error: boolean; msg: string };
-  setter: React.Dispatch<
-    React.SetStateAction<{
-      value: string;
-      error: boolean;
-      msg: string;
-    }>
-  >;
 }
 
 export interface CreateFormProps {
@@ -25,12 +18,13 @@ export const CreateForm: React.FC<CreateFormProps> = (props: CreateFormProps) =>
   for (const input of props.inputs) {
     input.onChange = input.onChange.bind(input);
   }
+
   const validateAll = () => {
     let errorFlag = false;
     for (const input of props.inputs) {
-      const response = input.validate(input.value);
-      if (response.error) errorFlag = true;
-      input.setter({ value: input.value, error: response.error, msg: response.msg });
+      input.onChange(input.value);
+      const { error } = input.validate(input.value);
+      if (error) errorFlag = true;
     }
     return errorFlag;
   };

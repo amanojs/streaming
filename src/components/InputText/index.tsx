@@ -7,7 +7,7 @@ export interface InputTextProps {
   value: string;
   error: boolean;
   msg: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
 }
 
 export const InputText: React.FC<InputTextProps> = (props: InputTextProps) => {

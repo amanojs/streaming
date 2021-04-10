@@ -20,11 +20,11 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
       value: userName.value,
       error: userName.error,
       msg: userName.msg,
-      onChange: function (e) {
-        const { error, msg } = this.validate(e.target.value);
-        this.setter({ value: e.target.value, error, msg });
+      onChange: function (value: string) {
+        const { error, msg } = this.validate(value);
+        setUserName({ value: value, error, msg });
       },
-      validate: (val) => {
+      validate: (val: string) => {
         const response = { error: false, msg: '' };
         if (val === '') {
           response.error = true;
@@ -34,8 +34,7 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
           response.msg = '12文字以内で入力してください';
         }
         return response;
-      },
-      setter: setUserName
+      }
     }
   ];
 
