@@ -7,13 +7,19 @@ export interface InputSub extends InputTextProps {
 }
 
 export interface CreateFormProps {
+  /** 横幅 px や % で指定 */
   width: string;
+  /** フォームタイトル*/
   head: string;
+  /** フォームのサブミットボタンのタイトル */
   btn: string;
+  /** InputText型にバリデーション処理を加えたインプットの配列 */
   inputs: InputSub[];
+  /** サブミット処理(オールバリデーション処理の後に実行されます) */
   onSubmit: () => any;
 }
 
+/** タイトルとインプットテキストとサブミットボタンのシンプルなフォーム */
 export const CreateForm: React.FC<CreateFormProps> = (props: CreateFormProps) => {
   for (const input of props.inputs) {
     input.onChange = input.onChange.bind(input);

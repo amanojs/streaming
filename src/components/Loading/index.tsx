@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
 
+/** ローディング画面 */
 export const Loading: React.FC = () => {
   return (
     <Box
