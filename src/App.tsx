@@ -6,17 +6,13 @@ import { Routes } from './config/route';
 import { useStateWithCallbackLazy } from 'use-state-with-callback';
 import { SnackbarProvider } from 'notistack';
 
-interface AppState {
-  socket: SocketIOClient.Socket | null;
-}
-
 export interface PageProps {
   getSocket(): Promise<SocketIOClient.Socket>;
   clearSocket(): void;
 }
 
 const App: React.FC = () => {
-  const [socket, setSocket] = useStateWithCallbackLazy<AppState['socket']>(null);
+  const [socket, setSocket] = useStateWithCallbackLazy<SocketIOClient.Socket | null>(null);
 
   // websocketに接続し、socket clientを返却
   const getSocket = (): Promise<SocketIOClient.Socket> => {

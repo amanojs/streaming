@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Presenter } from './Presenter';
+import { TextField } from '@material-ui/core';
 
 export interface InputTextProps {
   label: string;
@@ -12,13 +12,18 @@ export interface InputTextProps {
 
 export const InputText: React.FC<InputTextProps> = (props: InputTextProps) => {
   return (
-    <Presenter
-      error={props.error}
-      msg={props.msg}
-      value={props.value}
-      placeholder={props.placeholder}
-      label={props.label}
-      onChange={props.onChange}
-    />
+    <div>
+      <div style={{ color: '#606060', padding: '0 0 3px 0', fontSize: '13px', fontWeight: 'bold' }}>{props.label}</div>
+      <TextField
+        fullWidth
+        error={props.error}
+        helperText={props.msg}
+        variant="outlined"
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+        color="secondary"
+        placeholder={props.placeholder}
+      />
+    </div>
   );
 };

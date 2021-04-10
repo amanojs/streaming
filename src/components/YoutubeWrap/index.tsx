@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { State } from '../../store/store';
 import { YouTubePlayer } from 'youtube-player/dist/types';
-import { Presenter, PresenterProps } from './Presenter';
+import { Presenter } from './Presenter';
+import { YouTubeProps } from 'react-youtube';
 
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
@@ -11,7 +12,7 @@ interface YoutubeWrapProps {
 export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps) => {
   const [videoId, setVideoId] = React.useState<string>('');
   const socket = props.socket;
-  const [youtubeDisp, setDisp] = React.useState<PresenterProps['youtubeDisp']>(undefined); // youtube target
+  const [youtubeDisp, setDisp] = React.useState<YouTubePlayer | undefined>(undefined); // youtube target
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
   const [candidateId, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
@@ -103,7 +104,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   };
 
   // react-youtubeコンポーネントの設定
-  const player: PresenterProps['player'] = {
+  const player: YouTubeProps = {
     videoId: videoId,
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       if (!socket || isFirst) return;
@@ -159,7 +160,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     <React.Fragment>
       <input type="text" value={candidateId} onChange={(e) => setCandidate(e.target.value)} />
       <button onClick={() => handler()}>変更</button>
-      <Presenter socket={socket} player={player} videoStatus={videoStatus} youtubeDisp={youtubeDisp} />
+      <Presenter player={player} controller={{ socket, youtubeDisp, videoStatus }} />
     </React.Fragment>
   );
 };
