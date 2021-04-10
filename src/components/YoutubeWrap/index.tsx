@@ -189,12 +189,12 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
 
   return (
     <React.Fragment>
-      <input type="text" value={candidateId} onChange={(e) => setCandidate(e.target.value)} />
-      <button onClick={() => handler()}>変更</button>
       <Presenter
         player={player}
         controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
       />
+      <input type="text" value={candidateId} onChange={(e) => setCandidate(e.target.value)} />
+      <button onClick={() => handler()}>変更</button>
     </React.Fragment>
   );
 };

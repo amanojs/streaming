@@ -3,7 +3,6 @@
 .header_logo{
     font-family: 'Fredoka One', cursive;
     font-weight: bold;
-    font-size: 25px;
     letter-spacing: 1px;
     position: relative;
     color: #55E6C1;
@@ -13,6 +12,5 @@
     padding-left: 2px;
 }
 .header_logo > span{
-    font-size: 28px;
-    color: #55E6C1;
+    text-shadow: 2px 2px 3px #eee;
 }
