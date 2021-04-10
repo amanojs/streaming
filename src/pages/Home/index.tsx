@@ -46,7 +46,7 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
     const socket = await props.getSocket();
     console.log(socket);
     if (socket) {
-      socket.emit('create_room', userName, (res: { result: boolean; room_id: string }) => {
+      socket.emit('create_room', userName.value, (res: { result: boolean; room_id: string }) => {
         console.log(res);
         if (res.result) {
           dispach(roomModule.actions.setRoom({ roomId: res.room_id, userName: userName.value, isOwner: true }));
