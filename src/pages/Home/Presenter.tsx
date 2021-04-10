@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Grid } from '@material-ui/core';
-import { CreateForm, CreateFormProps } from '../../components/CreateForm';
+import { CreateForm, InputSub } from '../../components/CreateForm';
 import { makeStyles } from '@material-ui/core/styles';
 import './main.css';
 
 interface PresenterProps {
   createForm: {
-    inputs: CreateFormProps['inputs'];
-    onSubmit: CreateFormProps['onSubmit'];
+    inputs: InputSub[];
+    onSubmit: () => any;
   };
 }
 

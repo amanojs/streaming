@@ -1,28 +1,16 @@
 import * as React from 'react';
-import YouTube from 'react-youtube';
+import YouTube, { YouTubeProps } from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 import { YoutubeController } from '../YoutubeController';
-import { YoutubeControllerProps } from '../YoutubeController';
 import { Box, Grid } from '@material-ui/core';
 
 export interface PresenterProps {
-  socket: SocketIOClient.Socket;
-  player: {
-    videoId: string;
-    onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => void;
-    onPause: ({ target, data }: { target: YouTubePlayer; data: number }) => void;
-    onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => void;
-    onReady: (event: { target: YouTubePlayer }) => void;
-    opts: {
-      width?: string;
-      height?: string;
-      playerVars: {
-        [params: string]: string | number;
-      };
-    };
+  player: YouTubeProps;
+  controller: {
+    socket: SocketIOClient.Socket;
+    youtubeDisp: YouTubePlayer | undefined;
+    videoStatus: number;
   };
-  videoStatus: YoutubeControllerProps['videoStatus'];
-  youtubeDisp: YoutubeControllerProps['youtubeDisp'];
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -33,7 +21,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <Grid item xs={11}>
           <Box paddingY={3}>
             <YouTube {...props.player} />
-            <YoutubeController socket={props.socket} videoStatus={props.videoStatus} youtubeDisp={props.youtubeDisp} />
+            <YoutubeController {...props.controller} />
           </Box>
         </Grid>
       </Grid>

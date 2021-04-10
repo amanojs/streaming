@@ -3,15 +3,15 @@ import { Box, Grid, Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
-import { CreateForm, CreateFormProps } from '../../components/CreateForm';
+import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
   roomId: string;
   nameDialog: boolean;
   createForm: {
-    inputs: CreateFormProps['inputs'];
-    onSubmit: CreateFormProps['onSubmit'];
+    inputs: InputSub[];
+    onSubmit: () => void;
   };
 }
 
