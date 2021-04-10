@@ -2,7 +2,7 @@ import * as React from 'react';
 import YouTube from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Slider, IconButton } from '@material-ui/core';
+import { Grid, Slider, IconButton, Hidden } from '@material-ui/core';
 import { PlayArrow, Pause } from '@material-ui/icons';
 import { Volume } from '../Volume';
 
@@ -83,19 +83,28 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           />
         </Grid>
         <Grid container alignItems="center" style={{ padding: '0 20px 10px 20px' }}>
-          <Grid item xs={2} style={{ color: '#777' }}>
-            <span>{props.valueLabelFormat(props.timed)}</span>/<span>{props.valueLabelFormat(props.duratioin)}</span>
+          <Grid item xs={3} style={{ color: '#777' }}>
+            <Grid container alignItems="center" wrap="wrap">
+              <Hidden xsDown>
+                <Grid item sm={12} md={12} lg={5} xl={3}>
+                  <span>{props.valueLabelFormat(props.timed)}</span>/
+                  <span>{props.valueLabelFormat(props.duratioin)}</span>
+                </Grid>
+              </Hidden>
+              <Hidden xsDown>
+                <Grid item sm={12} md={12} lg={7} xl={5}>
+                  <Volume
+                    isMute={props.isMute}
+                    onChange={props.volumeSliderOnChange}
+                    onClick={props.volumeOnClick}
+                    volume={props.volume}
+                  ></Volume>
+                </Grid>
+              </Hidden>
+            </Grid>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={6}>
             <Grid container justify="center">
-              <Grid item>
-                <Volume
-                  isMute={props.isMute}
-                  onChange={props.volumeSliderOnChange}
-                  onClick={props.volumeOnClick}
-                  volume={props.volume}
-                ></Volume>
-              </Grid>
               <Grid item>
                 <IconButton onClick={props.playOrPause}>
                   {props.statusIcon === 'play' ? (
@@ -107,6 +116,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               </Grid>
             </Grid>
           </Grid>
+          <Grid item xs={3}></Grid>
         </Grid>
       </Grid>
     </React.Fragment>
