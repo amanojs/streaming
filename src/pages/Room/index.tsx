@@ -71,7 +71,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     if (screen.width < 600) return;
     enqueueSnackbar(message, {
       variant,
-      anchorOrigin: { horizontal: 'center', vertical: 'top' },
+      anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
       autoHideDuration: 2000
     });
   };
