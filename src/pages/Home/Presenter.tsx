@@ -3,7 +3,6 @@ import { Grid } from '@material-ui/core';
 import { CreateForm, CreateFormProps } from '../../components/CreateForm';
 import { makeStyles } from '@material-ui/core/styles';
 import './main.css';
-import { CopyRoomIdButton } from '../../components/CopyRoomIdButton';
 
 interface PresenterProps {
   createForm: {
@@ -28,7 +27,6 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           <Grid item className="logo" xs={12}>
             <span>S</span>treaming!!
           </Grid>
-          <CopyRoomIdButton />
           <CreateForm width="100%" head="ルーム作成" btn="作成" {...props.createForm} />
         </Grid>
       </Grid>
