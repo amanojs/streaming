@@ -15,7 +15,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   const [youtubeDisp, setDisp] = React.useState<YouTubePlayer | undefined>(undefined); // youtube target
   const [videoId, setVideoId] = React.useState<string>('');
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
-  const [candidateURL, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
   const [volume, setVolume] = React.useState<number>(0); // ボリューム
   const [volumeLog, setVolumeLog] = React.useState<number>(0); // 変更前のボリューム
@@ -91,7 +90,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       }
       setUpBuffer(youtubeDisp).then(() => {
         if (res.isPlaying) {
-          youtubeDisp.seekTo(res.time + 1.2, true);
+          youtubeDisp.seekTo(res.time + 1.5, true);
           youtubeDisp.playVideo();
         } else {
           youtubeDisp.seekTo(res.time, true);
@@ -193,10 +192,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     });
   };
 
-  const handler = () => {
-    socket.emit('youtube_add_movie', candidateURL);
-  };
-
   /** ボリュームを変更する */
   const changeVolume = (value: number) => {
     youtubeDisp?.setVolume(value);
@@ -224,8 +219,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
         player={player}
         controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
       />
-      <input type="text" value={candidateURL} onChange={(e) => setCandidate(e.target.value)} />
-      <button onClick={() => handler()}>変更</button>
     </React.Fragment>
   );
 };
