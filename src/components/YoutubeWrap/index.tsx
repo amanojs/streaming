@@ -15,7 +15,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   const [youtubeDisp, setDisp] = React.useState<YouTubePlayer | undefined>(undefined); // youtube target
   const [videoId, setVideoId] = React.useState<string>('');
   const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
-  const [candidateId, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
+  const [candidateURL, setCandidate] = React.useState<string>(''); // 動画URL入力フォームの値
   const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
   const [volume, setVolume] = React.useState<number>(0); // ボリューム
   const [volumeLog, setVolumeLog] = React.useState<number>(0); // 変更前のボリューム
@@ -24,15 +24,32 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   // onReady
   React.useEffect(() => {
     setUpSocketListenner();
-  }, [youtubeDisp]);
+  }, [youtubeDisp, videoId]);
 
-  // socket client Listennerを設定
+  /** socket client Listennerを設定 */
   const setUpSocketListenner = () => {
     if (!youtubeDisp) return;
-    const events = ['youtube_pause', 'youtube_play', 'youtube_seek', 'request_playing_data', 'new_playing_data'];
-    for (const event of events) {
-      socket.off(event);
+    const listenners = [
+      'youtube_add_movie',
+      'youtube_pause',
+      'youtube_play',
+      'youtube_seek',
+      'request_playing_data',
+      'new_playing_data'
+    ];
+    for (const listenner of listenners) {
+      socket.off(listenner);
     }
+
+    socket.on('youtube_add_movie', (movie_id: string) => {
+      console.log('movieId', movie_id);
+      setVideoId(movie_id);
+      youtubeDisp.cueVideoById(movie_id);
+      setUpBuffer(youtubeDisp).then(() => {
+        youtubeDisp.playVideo();
+      });
+    });
+
     socket.on('youtube_pause', (time: number) => {
       youtubeDisp?.pauseVideo();
       youtubeDisp?.seekTo(time, true);
@@ -69,14 +86,17 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
       console.log('newplayingData', res);
       if (res.movie_id) {
+        youtubeDisp.cueVideoById(res.movie_id);
         setVideoId(res.movie_id);
       }
-      if (res.isPlaying) {
-        youtubeDisp.seekTo(res.time + 0.2, true);
-        youtubeDisp.playVideo();
-      } else {
-        youtubeDisp.seekTo(res.time, true);
-      }
+      setUpBuffer(youtubeDisp).then(() => {
+        if (res.isPlaying) {
+          youtubeDisp.seekTo(res.time + 1.2, true);
+          youtubeDisp.playVideo();
+        } else {
+          youtubeDisp.seekTo(res.time, true);
+        }
+      });
     });
 
     // ボリューム情報のセット
@@ -85,7 +105,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     setVolumeLog(defaultVolume); // ボリュームを保存
   };
 
-  // ステータスナンバーから再生中か停止中かを返す
+  /** ステータスナンバーから再生中か停止中かを返す */
   const statusCheck = (value: number): boolean => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
     let isPlaying = false;
@@ -112,9 +132,8 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     return isPlaying;
   };
 
-  // react-youtubeコンポーネントの設定
+  /** react-youtubeコンポーネントの設定 */
   const player: YouTubeProps = {
-    videoId: videoId,
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       if (!socket || isFirst) return;
       socket.emit('youtube_play', target.getCurrentTime());
@@ -126,22 +145,18 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
       setDisp(target);
-      target.mute();
-      mute();
-      target.cueVideoById('b6-2P8RgT0A');
-      target.playVideo();
+      if (room.isOwner) {
+        target.cueVideoById('b6-2P8RgT0A');
+        setVideoId('b6-2P8RgT0A');
+        setUpBuffer(target).then(() => {
+          console.log('Buffer完了');
+        });
+      } else {
+        socket.emit('youtube_sync');
+      }
       window.setTimeout(() => {
-        target.pauseVideo();
-        target.seekTo(0, true);
-        target.unMute();
-        unMute();
-        if (!room.isOwner) {
-          socket.emit('youtube_sync');
-        }
-        window.setTimeout(() => {
-          setIsFirst(false);
-        }, 500);
-      }, 1000);
+        setIsFirst(false);
+      }, 2000);
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
@@ -162,8 +177,24 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     }
   };
 
+  /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
+  const setUpBuffer = (target: YouTubePlayer) => {
+    return new Promise((resolve) => {
+      target.mute();
+      mute();
+      target.playVideo();
+      window.setTimeout(() => {
+        target.pauseVideo();
+        target.seekTo(0, true);
+        target.unMute();
+        unMute();
+        resolve(true);
+      }, 1000);
+    });
+  };
+
   const handler = () => {
-    youtubeDisp?.loadVideoById(candidateId);
+    socket.emit('youtube_add_movie', candidateURL);
   };
 
   /** ボリュームを変更する */
@@ -193,7 +224,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
         player={player}
         controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
       />
-      <input type="text" value={candidateId} onChange={(e) => setCandidate(e.target.value)} />
+      <input type="text" value={candidateURL} onChange={(e) => setCandidate(e.target.value)} />
       <button onClick={() => handler()}>変更</button>
     </React.Fragment>
   );
