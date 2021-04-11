@@ -30,7 +30,8 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
 
       checkTimer = setInterval(
         (props) => {
-          setTimed(props.youtubeDisp.getCurrentTime());
+          const currentTime = props.youtubeDisp.getCurrentTime();
+          setTimed(currentTime);
         },
         150,
         props
@@ -45,7 +46,8 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
 
   React.useEffect(() => {
     if (props.youtubeDisp) {
-      setDuration(props.youtubeDisp?.getDuration());
+      const duration = props.youtubeDisp.getDuration();
+      setDuration(duration);
     }
     statusCheck(props.videoStatus);
   }, [props.videoStatus]);
@@ -59,6 +61,9 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   };
 
   const valueLabelFormat = (value: number): string => {
+    if (!value) {
+      return '00:00';
+    }
     const floorValue = Math.floor(value);
     const timeH = Math.floor((floorValue % (24 * 60 * 60)) / (60 * 60));
     const timeM = Math.floor(((floorValue % (24 * 60 * 60)) % (60 * 60)) / 60);

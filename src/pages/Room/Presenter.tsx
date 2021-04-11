@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
+import { AddForm } from '../../components/AddForm';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -18,11 +19,22 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
-      <Grid container justify="center">
-        <Grid item xs={12}>
-          {props.roomId && <Box>{props.socket && <YoutubeWrap socket={props.socket} />}</Box>}
+      {props.roomId && props.socket ? (
+        <Grid container justify="center" style={{ paddingBottom: '50px' }}>
+          <Grid item xs={12}>
+            <Box>
+              <YoutubeWrap socket={props.socket} />
+            </Box>
+          </Grid>
+          <Grid item xs={10}>
+            <Box boxSizing="border-box" padding="20px" borderRadius="2px" style={{ background: '#fff' }}>
+              <AddForm socket={props.socket} />
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
+        false
+      )}
       {props.roomId ? (
         false
       ) : (
