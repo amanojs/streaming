@@ -97,11 +97,6 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
         }
       });
     });
-
-    // ボリューム情報のセット
-    const defaultVolume = youtubeDisp.getVolume();
-    changeVolume(defaultVolume); // ボリュームを取得
-    setVolumeLog(defaultVolume); // ボリュームを保存
   };
 
   /** ステータスナンバーから再生中か停止中かを返す */
@@ -144,11 +139,16 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
       setDisp(target);
+      target.setVolume(30);
       if (room.isOwner) {
         target.cueVideoById('b6-2P8RgT0A');
         setVideoId('b6-2P8RgT0A');
         setUpBuffer(target).then(() => {
           console.log('Buffer完了');
+          // ボリューム情報のセット
+          const defaultVolume = target.getVolume();
+          changeVolume(defaultVolume); // ボリュームを取得
+          setVolumeLog(defaultVolume); // ボリュームを保存
         });
       } else {
         socket.emit('youtube_sync');
@@ -179,13 +179,11 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
   const setUpBuffer = (target: YouTubePlayer) => {
     return new Promise((resolve) => {
-      target.mute();
       mute();
       target.playVideo();
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        target.unMute();
         unMute();
         resolve(true);
       }, 1000);
