@@ -215,6 +215,7 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
     <React.Fragment>
       <Presenter
         player={player}
+        videoId={videoId}
         controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
       />
     </React.Fragment>

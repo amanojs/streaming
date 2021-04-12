@@ -4,9 +4,11 @@ import { YouTubePlayer } from 'youtube-player/dist/types';
 import { YoutubeController } from '../YoutubeController';
 import { Box, Grid } from '@material-ui/core';
 import './main.css';
+import { PlayingBoard } from '../PlayingBoard';
 
 export interface PresenterProps {
   player: YouTubeProps;
+  videoId: string;
   controller: {
     socket: SocketIOClient.Socket;
     youtubeDisp: YouTubePlayer | undefined;
@@ -25,9 +27,18 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
       <Grid container justify="center">
         {/* 最大化の場合は↓を変更 */}
         <Grid item xs={10}>
-          <Box paddingY={3}>
-            <YouTube {...props.player} className="youtube_display" />
-            <YoutubeController {...props.controller} />
+          <Box paddingY={1}>
+            <Grid container>
+              <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
+                <PlayingBoard videoId={props.videoId} />
+              </Grid>
+              <Grid item xs={12}>
+                <YouTube {...props.player} className="youtube_display" />
+              </Grid>
+              <Grid item xs={12}>
+                <YoutubeController {...props.controller} />
+              </Grid>
+            </Grid>
           </Box>
         </Grid>
       </Grid>
