@@ -90,7 +90,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_pause', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('listen!pause!', time);
+      console.log('listen!pause!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.pauseVideo();
         this.state.youtubeDisp?.seekTo(time, true);
@@ -99,7 +99,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_play', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('listen!play!', time);
+      console.log('listen!play!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.playVideo();
       });
@@ -143,6 +143,9 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         } else {
           this.state.youtubeDisp?.seekTo(res.time, true);
         }
+        window.setTimeout(() => {
+          this.setState({ isFirst: false });
+        }, 500);
       });
     });
   };
@@ -228,15 +231,13 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                   this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
                     this.setUpBuffer(target).then(() => {
                       console.log('Buffer完了');
+                      this.setState({ isFirst: false });
                     });
                   });
                 }
               } else {
                 this.socket.emit('youtube_sync');
               }
-              window.setTimeout(() => {
-                this.setState({ isFirst: false });
-              }, 2000);
             }
           );
         }
