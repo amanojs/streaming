@@ -15,6 +15,7 @@ interface YoutubeWrapState {
   youtubeDisp: YouTubePlayer | undefined;
   videoId: string;
   videoStatus: number;
+  getAction: boolean;
   isFirst: boolean;
   volume: number;
   volumeLog: number;
@@ -42,6 +43,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       youtubeDisp: undefined, // youtube target
       videoId: '',
       videoStatus: -1, // YouTubeコンポーネントのステータスが変更された時に変更される
+      getAction: false,
       isFirst: true, // 参加時かどうかのフラグ
       volume: 0, // ボリューム
       volumeLog: 0, // 変更前のボリューム
@@ -57,7 +59,6 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   socket = this.props.socket;
 
   componentDidUpdate(): void {
-    console.log('componentDidUpdate', this.state.videoId);
     if (this.state.youtubeDisp) {
       this.setUpSocketListenner();
     }
@@ -89,15 +90,19 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_pause', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      this.state.youtubeDisp.pauseVideo();
-      this.state.youtubeDisp.seekTo(time, true);
-      //console.log('listen!pause!', time, youtubeDisp);
+      // console.log('listen!pause!', time);
+      this.setState({ getAction: true }, () => {
+        this.state.youtubeDisp?.pauseVideo();
+        this.state.youtubeDisp?.seekTo(time, true);
+      });
     });
 
     this.socket.on('youtube_play', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      this.state.youtubeDisp.playVideo();
-      // console.log('listen!play!', time, youtubeDisp);
+      // console.log('listen!play!', time);
+      this.setState({ getAction: true }, () => {
+        this.state.youtubeDisp?.playVideo();
+      });
     });
 
     this.socket.on('youtube_seek', (time: number) => {
@@ -173,10 +178,18 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   player: YouTubeProps = {
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       if (this.state.isFirst) return;
+      if (this.state.getAction) {
+        this.setState({ getAction: false });
+        return;
+      }
       this.socket.emit('youtube_play', target.getCurrentTime());
     },
     onPause: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       if (this.state.isFirst) return;
+      if (this.state.getAction) {
+        this.setState({ getAction: false });
+        return;
+      }
       this.socket.emit('youtube_pause', target.getCurrentTime());
     },
     onReady: (event: { target: YouTubePlayer }) => {
