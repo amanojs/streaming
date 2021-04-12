@@ -5,10 +5,11 @@ import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
+import { RoomState } from '../../store/modules/roomModule';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
-  roomId: string;
+  room: RoomState;
   nameDialog: boolean;
   createForm: {
     inputs: InputSub[];
@@ -19,11 +20,11 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
-      {props.roomId && props.socket ? (
+      {props.room.roomId && props.socket ? (
         <Grid container justify="center" style={{ paddingBottom: '50px' }}>
           <Grid item xs={12}>
             <Box>
-              <YoutubeWrap socket={props.socket} />
+              <YoutubeWrap socket={props.socket} room={props.room} />
             </Box>
           </Grid>
           <Grid item xs={10}>
@@ -35,7 +36,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
       ) : (
         false
       )}
-      {props.roomId ? (
+      {props.room.roomId ? (
         false
       ) : (
         <div className="base">

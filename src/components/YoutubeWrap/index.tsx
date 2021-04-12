@@ -4,30 +4,51 @@ import { State } from '../../store/store';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 import { Presenter } from './Presenter';
 import { YouTubeProps } from 'react-youtube';
+import { RoomState } from '../../store/modules/roomModule';
 
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
+  room: RoomState;
 }
 
-export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps) => {
-  const socket = props.socket;
-  const room = useSelector((state: State) => state.room);
-  const [youtubeDisp, setDisp] = React.useState<YouTubePlayer | undefined>(undefined); // youtube target
-  const [videoId, setVideoId] = React.useState<string>('');
-  const [videoStatus, setVideoStatus] = React.useState<number>(-1); // YouTubeコンポーネントのステータスが変更された時に変更される
-  const [isFirst, setIsFirst] = React.useState<boolean>(true); // 参加時かどうかのフラグ
-  const [volume, setVolume] = React.useState<number>(0); // ボリューム
-  const [volumeLog, setVolumeLog] = React.useState<number>(0); // 変更前のボリューム
-  const [isMuted, setIsMuted] = React.useState<boolean>(true); // ミュートフラグ
+interface YoutubeWrapState {
+  youtubeDisp: YouTubePlayer | undefined;
+  videoId: string;
+  videoStatus: number;
+  isFirst: boolean;
+  volume: number;
+  volumeLog: number;
+  isMuted: boolean;
+}
 
-  // onReady
-  React.useEffect(() => {
-    setUpSocketListenner();
-  }, [youtubeDisp, videoId]);
+export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapState> {
+  constructor(props: YoutubeWrapProps) {
+    super(props);
+    this.state = {
+      youtubeDisp: undefined, // youtube target
+      videoId: '',
+      videoStatus: -1, // YouTubeコンポーネントのステータスが変更された時に変更される
+      isFirst: true, // 参加時かどうかのフラグ
+      volume: 0, // ボリューム
+      volumeLog: 0, // 変更前のボリューム
+      isMuted: true // ミュートフラグ
+    };
+    this.mute = this.mute.bind(this);
+    this.unMute = this.unMute.bind(this);
+    this.changeVolume = this.changeVolume.bind(this);
+  }
+
+  socket = this.props.socket;
+
+  componentDidUpdate() {
+    console.log('componentDidUpdate', this.state.videoId);
+    if (this.state.youtubeDisp) {
+      this.setUpSocketListenner();
+    }
+  }
 
   /** socket client Listennerを設定 */
-  const setUpSocketListenner = () => {
-    if (!youtubeDisp) return;
+  setUpSocketListenner = () => {
     const listenners = [
       'youtube_add_movie',
       'youtube_pause',
@@ -37,70 +58,76 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
       'new_playing_data'
     ];
     for (const listenner of listenners) {
-      socket.off(listenner);
+      this.socket.off(listenner);
     }
 
-    socket.on('youtube_add_movie', (movie_id: string) => {
+    this.socket.on('youtube_add_movie', (movie_id: string) => {
+      if (!this.state.youtubeDisp) return;
       console.log('movieId', movie_id);
-      setVideoId(movie_id);
-      youtubeDisp.cueVideoById(movie_id);
-      setUpBuffer(youtubeDisp).then(() => {
-        youtubeDisp.playVideo();
+      this.setState({ videoId: movie_id });
+      this.state.youtubeDisp.cueVideoById(movie_id);
+      this.setUpBuffer(this.state.youtubeDisp).then(() => {
+        this.state.youtubeDisp?.playVideo();
       });
     });
 
-    socket.on('youtube_pause', (time: number) => {
-      youtubeDisp?.pauseVideo();
-      youtubeDisp?.seekTo(time, true);
+    this.socket.on('youtube_pause', (time: number) => {
+      if (!this.state.youtubeDisp) return;
+      this.state.youtubeDisp.pauseVideo();
+      this.state.youtubeDisp.seekTo(time, true);
       //console.log('listen!pause!', time, youtubeDisp);
     });
 
-    socket.on('youtube_play', (time: number) => {
-      youtubeDisp?.playVideo();
+    this.socket.on('youtube_play', (time: number) => {
+      if (!this.state.youtubeDisp) return;
+      this.state.youtubeDisp.playVideo();
       // console.log('listen!play!', time, youtubeDisp);
     });
 
-    socket.on('youtube_seek', (time: number) => {
-      youtubeDisp?.seekTo(time, true);
+    this.socket.on('youtube_seek', (time: number) => {
+      if (!this.state.youtubeDisp) return;
+      this.state.youtubeDisp.seekTo(time, true);
     });
 
-    socket.on('request_playing_data', async (participant_id: string) => {
-      const status = youtubeDisp?.getPlayerState();
-      const time = youtubeDisp?.getCurrentTime();
+    this.socket.on('request_playing_data', async (participant_id: string) => {
+      if (!this.state.youtubeDisp) return;
+      const status = this.state.youtubeDisp.getPlayerState();
+      const time = this.state.youtubeDisp.getCurrentTime();
       const playingData: { movie_id?: string; time: number; isPlaying: boolean } = {
         time: time || 0.0,
-        isPlaying: status ? statusCheck(status) : false
+        isPlaying: status ? this.statusCheck(status) : false
       };
       // console.log('プレイングデータをemitします', playingData);
-      if (videoId) {
-        playingData.movie_id = videoId;
+      if (this.state.videoId) {
+        playingData.movie_id = this.state.videoId;
       }
       const payload = {
         socket_id: participant_id,
         playingData: playingData
       };
-      socket.emit('send_playing_data', payload);
+      this.socket.emit('send_playing_data', payload);
     });
 
-    socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
+    this.socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
+      if (!this.state.youtubeDisp) return;
       console.log('newplayingData', res);
       if (res.movie_id) {
-        youtubeDisp.cueVideoById(res.movie_id);
-        setVideoId(res.movie_id);
+        this.state.youtubeDisp.cueVideoById(res.movie_id);
+        this.setState({ videoId: res.movie_id });
       }
-      setUpBuffer(youtubeDisp).then(() => {
+      this.setUpBuffer(this.state.youtubeDisp).then(() => {
         if (res.isPlaying) {
-          youtubeDisp.seekTo(res.time + 1.5, true);
-          youtubeDisp.playVideo();
+          this.state.youtubeDisp?.seekTo(res.time + 1.5, true);
+          this.state.youtubeDisp?.playVideo();
         } else {
-          youtubeDisp.seekTo(res.time, true);
+          this.state.youtubeDisp?.seekTo(res.time, true);
         }
       });
     });
   };
 
   /** ステータスナンバーから再生中か停止中かを返す */
-  const statusCheck = (value: number): boolean => {
+  statusCheck = (value: number): boolean => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
     let isPlaying = false;
     switch (value) {
@@ -127,39 +154,39 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   };
 
   /** react-youtubeコンポーネントの設定 */
-  const player: YouTubeProps = {
+  player: YouTubeProps = {
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket || isFirst) return;
-      socket.emit('youtube_play', target.getCurrentTime());
+      if (this.state.isFirst) return;
+      this.socket.emit('youtube_play', target.getCurrentTime());
     },
     onPause: ({ target, data }: { target: YouTubePlayer; data: number }) => {
-      if (!socket || isFirst) return;
-      socket.emit('youtube_pause', target.getCurrentTime());
+      if (this.state.isFirst) return;
+      this.socket.emit('youtube_pause', target.getCurrentTime());
     },
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
-      setDisp(target);
+      this.setState({ youtubeDisp: target });
       target.setVolume(30);
-      if (room.isOwner) {
+      if (this.props.room.isOwner) {
         target.cueVideoById('b6-2P8RgT0A');
-        setVideoId('b6-2P8RgT0A');
-        setUpBuffer(target).then(() => {
+        this.setState({ videoId: 'b6-2P8RgT0A' });
+        this.setUpBuffer(target).then(() => {
           console.log('Buffer完了');
           // ボリューム情報のセット
           const defaultVolume = target.getVolume();
-          changeVolume(defaultVolume); // ボリュームを取得
-          setVolumeLog(defaultVolume); // ボリュームを保存
+          this.changeVolume(defaultVolume); // ボリュームを取得
+          this.setState({ volumeLog: defaultVolume }); // ボリュームを保存
         });
       } else {
-        socket.emit('youtube_sync');
+        this.socket.emit('youtube_sync');
       }
       window.setTimeout(() => {
-        setIsFirst(false);
+        this.setState({ isFirst: false });
       }, 2000);
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
-      setVideoStatus(data);
+      this.setState({ videoStatus: data });
     },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
     opts: {
@@ -177,47 +204,58 @@ export const YoutubeWrap: React.FC<YoutubeWrapProps> = (props: YoutubeWrapProps)
   };
 
   /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
-  const setUpBuffer = (target: YouTubePlayer) => {
+  setUpBuffer = (target: YouTubePlayer) => {
     return new Promise((resolve) => {
-      mute();
+      this.mute();
       target.playVideo();
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        unMute();
+        this.unMute();
         resolve(true);
       }, 1000);
     });
   };
 
   /** ボリュームを変更する */
-  const changeVolume = (value: number) => {
-    youtubeDisp?.setVolume(value);
-    setVolume(value);
+  changeVolume = (value: number) => {
+    this.state.youtubeDisp?.setVolume(value);
+    this.setState({ volume: value });
   };
 
   /** ミュート時の処理 */
-  const mute = () => {
-    setIsMuted(true);
-    changeVolume(0);
-    setVolumeLog(volume);
-    youtubeDisp?.mute();
+  mute = () => {
+    this.setState({ isMuted: true });
+    this.changeVolume(0);
+    this.setState({ volumeLog: this.state.volume });
+    this.state.youtubeDisp?.mute();
   };
 
   /** アンミュート時の処理 */
-  const unMute = () => {
-    setIsMuted(false);
-    youtubeDisp?.unMute();
-    volumeLog > 30 ? changeVolume(volumeLog) : changeVolume(30);
+  unMute = () => {
+    this.setState({ isMuted: false });
+    this.state.youtubeDisp?.unMute();
+    this.state.volumeLog > 30 ? this.changeVolume(this.state.volumeLog) : this.changeVolume(30);
   };
 
-  return (
-    <React.Fragment>
-      <Presenter
-        player={player}
-        videoId={videoId}
-        controller={{ socket, youtubeDisp, videoStatus, volume, isMuted, mute, unMute, changeVolume }}
-      />
-    </React.Fragment>
-  );
-};
+  render() {
+    return (
+      <React.Fragment>
+        <Presenter
+          player={this.player}
+          videoId={this.state.videoId}
+          controller={{
+            socket: this.socket,
+            youtubeDisp: this.state.youtubeDisp,
+            videoStatus: this.state.videoStatus,
+            volume: this.state.volume,
+            isMuted: this.state.isMuted,
+            mute: this.mute,
+            unMute: this.unMute,
+            changeVolume: this.changeVolume
+          }}
+        />
+      </React.Fragment>
+    );
+  }
+}
