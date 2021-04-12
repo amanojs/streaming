@@ -117,7 +117,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   return (
     <Presenter
       socket={socket}
-      roomId={room.roomId}
+      room={room}
       nameDialog={nameDialog}
       createForm={{ inputs, onSubmit: enterSubmitHandler }}
     />

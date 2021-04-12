@@ -15,14 +15,20 @@ export const PlayingBoard: React.FC<PlayingBoardProps> = (props: PlayingBoardPro
     getTitle();
   }, [props.videoId]);
   const getTitle = () => {
+    console.log('youtube videoId', props.videoId);
     axios
       .get(`https://www.googleapis.com/youtube/v3/search?key=${APIKEY}&part=id,snippet`, {
         params: { q: props.videoId }
       })
       .then(({ data, status }) => {
         if (status === 200) {
-          const title = data.items[0].snippet.title;
-          setTitle(title);
+          // console.log('title data', data);
+          try {
+            const title = data.items[0].snippet.title;
+            setTitle(title);
+          } catch {
+            setTitle('動画タイトルを取得できませんでした');
+          }
         }
       });
   };
