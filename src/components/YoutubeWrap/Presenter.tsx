@@ -19,6 +19,7 @@ export interface PresenterProps {
     mute: () => void;
     unMute: () => void;
   };
+  opts: YouTubeProps['opts'];
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -32,8 +33,8 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
                 <PlayingBoard videoId={props.videoId} />
               </Grid>
-              <Grid item xs={12}>
-                <YouTube {...props.player} className="youtube_display" />
+              <Grid style={{ background: 'black' }} item xs={12}>
+                <YouTube {...props.player} opts={props.opts} className="youtube_display" />
               </Grid>
               <Grid item xs={12}>
                 <YoutubeController {...props.controller} />

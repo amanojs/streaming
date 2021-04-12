@@ -19,7 +19,21 @@ interface YoutubeWrapState {
   volume: number;
   volumeLog: number;
   isMuted: boolean;
+  opts: YouTubeProps['opts'];
 }
+
+const defaultOpts: YouTubeProps['opts'] = {
+  width: '100%',
+  height: '700px',
+  playerVars: {
+    controls: 1,
+    rel: 0,
+    playsinline: 1,
+    fs: 0,
+    disablekb: 1,
+    modestbranding: 1
+  }
+};
 
 export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapState> {
   constructor(props: YoutubeWrapProps) {
@@ -31,8 +45,10 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       isFirst: true, // 参加時かどうかのフラグ
       volume: 0, // ボリューム
       volumeLog: 0, // 変更前のボリューム
-      isMuted: true // ミュートフラグ
+      isMuted: true, // ミュートフラグ
+      opts: defaultOpts // YouTubePlayerのオプション
     };
+
     this.mute = this.mute.bind(this);
     this.unMute = this.unMute.bind(this);
     this.changeVolume = this.changeVolume.bind(this);
@@ -40,7 +56,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
   socket = this.props.socket;
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     console.log('componentDidUpdate', this.state.videoId);
     if (this.state.youtubeDisp) {
       this.setUpSocketListenner();
@@ -48,7 +64,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   /** socket client Listennerを設定 */
-  setUpSocketListenner = () => {
+  setUpSocketListenner = (): void => {
     const listenners = [
       'youtube_add_movie',
       'youtube_pause',
@@ -166,45 +182,62 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     onReady: (event: { target: YouTubePlayer }) => {
       const { target } = event;
       this.setState({ youtubeDisp: target });
-      target.setVolume(30);
-      if (this.props.room.isOwner) {
-        target.cueVideoById('b6-2P8RgT0A');
-        this.setState({ videoId: 'b6-2P8RgT0A' });
-        this.setUpBuffer(target).then(() => {
-          console.log('Buffer完了');
-          // ボリューム情報のセット
-          const defaultVolume = target.getVolume();
-          this.changeVolume(defaultVolume); // ボリュームを取得
-          this.setState({ volumeLog: defaultVolume }); // ボリュームを保存
-        });
-      } else {
-        this.socket.emit('youtube_sync');
-      }
-      window.setTimeout(() => {
-        this.setState({ isFirst: false });
-      }, 2000);
+      // ボリューム情報のセット
+      const defaultVolume = target.getVolume();
+      let prev_flag: number | undefined = 0;
+      this.setState(
+        (prev) => {
+          // コントローラ表示時のみボリュームログに保存
+          prev_flag = prev.opts?.playerVars?.controls;
+          if (prev.opts?.playerVars?.controls === 1) {
+            return { ...prev, volumeLog: defaultVolume };
+          } else {
+            return { ...prev };
+          }
+        },
+        () => {
+          // コントローラを非表示にする
+          this.setState(
+            (prev) => ({
+              opts: {
+                ...prev.opts,
+                playerVars: {
+                  ...prev.opts?.playerVars,
+                  controls: 0
+                }
+              }
+            }),
+            () => {
+              target.setVolume(0);
+              if (this.props.room.isOwner) {
+                if (prev_flag === 0) {
+                  target.cueVideoById('b6-2P8RgT0A');
+                  this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+                    this.setUpBuffer(target).then(() => {
+                      console.log('Buffer完了');
+                    });
+                  });
+                }
+              } else {
+                this.socket.emit('youtube_sync');
+              }
+              window.setTimeout(() => {
+                this.setState({ isFirst: false });
+              }, 2000);
+            }
+          );
+        }
+      );
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
       this.setState({ videoStatus: data });
-    },
-    // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
-    opts: {
-      width: '100%',
-      height: '700px',
-      playerVars: {
-        controls: 0,
-        rel: 0,
-        playsinline: 1,
-        fs: 0,
-        disablekb: 1,
-        modestbranding: 1
-      }
     }
+    // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
   };
 
   /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
-  setUpBuffer = (target: YouTubePlayer) => {
+  setUpBuffer = (target: YouTubePlayer): Promise<boolean> => {
     return new Promise((resolve) => {
       this.mute();
       target.playVideo();
@@ -218,31 +251,39 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   };
 
   /** ボリュームを変更する */
-  changeVolume = (value: number) => {
+  changeVolume = (value: number): void => {
     this.state.youtubeDisp?.setVolume(value);
     this.setState({ volume: value });
   };
 
   /** ミュート時の処理 */
-  mute = () => {
-    this.setState({ isMuted: true });
-    this.changeVolume(0);
-    this.setState({ volumeLog: this.state.volume });
-    this.state.youtubeDisp?.mute();
+  mute = (): void => {
+    this.setState({ isMuted: true }, () => {
+      this.setState((prev) => {
+        if (prev.volume > 0) {
+          return { volumeLog: this.state.volume };
+        } else {
+          return { ...prev };
+        }
+      });
+      this.changeVolume(0);
+      this.state.youtubeDisp?.mute();
+    });
   };
 
   /** アンミュート時の処理 */
-  unMute = () => {
+  unMute = (): void => {
     this.setState({ isMuted: false });
     this.state.youtubeDisp?.unMute();
-    this.state.volumeLog > 30 ? this.changeVolume(this.state.volumeLog) : this.changeVolume(30);
+    this.state.volumeLog > 1 ? this.changeVolume(this.state.volumeLog) : this.changeVolume(30);
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <React.Fragment>
         <Presenter
           player={this.player}
+          opts={this.state.opts}
           videoId={this.state.videoId}
           controller={{
             socket: this.socket,
