@@ -26,9 +26,16 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         // パラメータからroom_idを取得
         const roomId = getParamValue('room_id');
         if (roomId) {
-          // ルーム入出処理
-          setEnterId(roomId);
-          setNameDialog(true);
+          rec_socket.emit('check_room', roomId, (res: boolean) => {
+            if (res) {
+              // ルーム入出処理
+              setEnterId(roomId);
+              setNameDialog(true);
+            } else {
+              sendNotifiction('ルームが存在しませんでした', 'error', { horizontal: 'center', vertical: 'top' });
+              history.push('/');
+            }
+          });
         }
       }
     });
