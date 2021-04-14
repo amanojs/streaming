@@ -48,16 +48,16 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   }, [socket]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
-    if (!socket) return console.log('room :', 'socketがnullだよ', socket);
+    if (!socket) return sendNotifiction('入出に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
     socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
       console.log('入出', res);
       if (res) {
         dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
         setNameDialog(false);
-      } /*  else {
-        alert('入出に失敗しました');
+      } else {
+        sendNotifiction('入出に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
         history.push('/');
-      } */
+      }
     });
   };
 
@@ -67,11 +67,18 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     return value;
   };
 
-  const sendNotifiction = (message: string, variant: VariantType) => {
+  const sendNotifiction = (
+    message: string,
+    variant: VariantType,
+    position: { horizontal: 'left' | 'center' | 'right'; vertical: 'top' | 'bottom' } = {
+      horizontal: 'left',
+      vertical: 'bottom'
+    }
+  ) => {
     if (screen.width < 600) return;
     enqueueSnackbar(message, {
       variant,
-      anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+      anchorOrigin: { horizontal: position.horizontal, vertical: position.vertical },
       autoHideDuration: 2000
     });
   };
