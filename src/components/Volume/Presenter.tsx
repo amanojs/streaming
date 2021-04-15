@@ -12,7 +12,7 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <IconButton color="secondary" onClick={props.onClick}>
+      <IconButton size="small" color="secondary" onClick={props.onClick}>
         {props.isMute ? <VolumeOff></VolumeOff> : <VolumeUp></VolumeUp>}
       </IconButton>
       <VolumeSlider
@@ -24,7 +24,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         onChange={props.onChange}
         style={{
           width: '100%',
-          marginLeft: '1px'
+          marginLeft: '12px'
         }}
       ></VolumeSlider>
     </div>
