@@ -16,6 +16,7 @@ export interface PresenterProps {
     volume: number;
     isMuted: boolean;
     changeVolume: (num: number) => void;
+    setVolumeLog: (num: number) => void;
     mute: () => void;
     unMute: () => void;
   };

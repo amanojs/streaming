@@ -270,11 +270,19 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.setState({ volume: value });
   };
 
+  /** ボリュームログを変更する */
+  setVolumeLog = (value: number): void => {
+    console.log(value);
+    if (value > 5 && value <= 100) {
+      this.setState({ volumeLog: value });
+    }
+  };
+
   /** ミュート時の処理 */
   mute = (): void => {
     this.setState({ isMuted: true }, () => {
       this.setState((prev) => {
-        if (prev.volume > 0) {
+        if (prev.volume > 5) {
           return { volumeLog: this.state.volume };
         } else {
           return { ...prev };
@@ -295,6 +303,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   render(): JSX.Element {
     return (
       <React.Fragment>
+        <div>{this.state.volumeLog}</div>
         <Presenter
           player={this.player}
           opts={this.state.opts}
@@ -307,7 +316,8 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
             isMuted: this.state.isMuted,
             mute: this.mute,
             unMute: this.unMute,
-            changeVolume: this.changeVolume
+            changeVolume: this.changeVolume,
+            setVolumeLog: this.setVolumeLog
           }}
         />
       </React.Fragment>

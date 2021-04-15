@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { Presenter } from './Presenter';
-import { Grid, Slider, IconButton, withStyles } from '@material-ui/core';
-import { VolumeOff, VolumeDown, VolumeUp } from '@material-ui/icons';
 
 export interface VolumeProps {
   isMute: boolean;

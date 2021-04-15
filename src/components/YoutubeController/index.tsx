@@ -12,6 +12,7 @@ export interface YoutubeControllerProps {
   mute: () => void;
   unMute: () => void;
   changeVolume: (num: number) => void;
+  setVolumeLog: (num: number) => void;
 }
 
 export const YoutubeController: React.FC<YoutubeControllerProps> = (props: YoutubeControllerProps) => {
@@ -135,6 +136,20 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   /** ボリューム変更処理 */
   const volumeSliderOnChange = (e: React.ChangeEvent, value: number | number[]) => {
     const num = Number(value);
+
+    switch (e.type) {
+      case 'mousemove':
+        break;
+      case 'mousedown':
+        // クリック時の処理
+        if (num > 5) {
+          props.setVolumeLog(num);
+        }
+        break;
+      default:
+      // デフォルト処理
+    }
+
     // ボリュームを変更
     props.changeVolume(num);
     // ボリュームの値を参照しミュート状態を切り替え
