@@ -3,7 +3,7 @@ import YouTube from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Slider, IconButton, Hidden } from '@material-ui/core';
-import { PlayArrow, Pause } from '@material-ui/icons';
+import { PlayArrow, Pause, FastForward, FastRewind } from '@material-ui/icons';
 import { Volume } from '../Volume';
 
 export interface PresenterProps {
@@ -11,6 +11,7 @@ export interface PresenterProps {
   timed: number;
   duratioin: number;
   sliderOnChange: (e: any, value: any) => void;
+  fastTimed: (value: number) => void;
   valueLabelFormat: (value: number) => string;
   playOrPause: () => void;
   isMute: boolean;
@@ -103,8 +104,13 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               </Hidden>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Grid container justify="center">
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+            <Grid container justify="center" alignItems="center" spacing={1}>
+              <Grid item>
+                <IconButton size="medium" onClick={() => props.fastTimed(-15)}>
+                  <FastRewind fontSize="small" color="secondary" />
+                </IconButton>
+              </Grid>
               <Grid item>
                 <IconButton onClick={props.playOrPause}>
                   {props.statusIcon === 'play' ? (
@@ -112,6 +118,11 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   ) : (
                     <Pause fontSize="large" color="secondary" />
                   )}
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <IconButton size="medium" onClick={() => props.fastTimed(15)}>
+                  <FastForward fontSize="small" color="secondary" />
                 </IconButton>
               </Grid>
             </Grid>
