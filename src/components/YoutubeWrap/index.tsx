@@ -272,7 +272,6 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
   /** ボリュームログを変更する */
   setVolumeLog = (value: number): void => {
-    console.log(value);
     if (value > 5 && value <= 100) {
       this.setState({ volumeLog: value });
     }
@@ -303,7 +302,6 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   render(): JSX.Element {
     return (
       <React.Fragment>
-        <div>{this.state.volumeLog}</div>
         <Presenter
           player={this.player}
           opts={this.state.opts}
