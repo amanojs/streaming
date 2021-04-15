@@ -54,9 +54,25 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
 
   const sliderOnChange = (changedtime: MouseEvent, value: number | number[]) => {
     if (props.youtubeDisp) {
-      props.socket?.emit('youtube_seek', value);
+      props.socket.emit('youtube_seek', value);
       props.youtubeDisp.seekTo(Number(value), true);
       setTimed(Number(value));
+    }
+  };
+
+  const fastTimed = (value: number) => {
+    if (props.youtubeDisp) {
+      let targetTime = timed + value;
+      if (duration <= targetTime) {
+        targetTime = duration - 0.2;
+        setTimed(targetTime);
+        props.youtubeDisp.pauseVideo();
+        window.setTimeout(() => {
+          props.youtubeDisp?.playVideo();
+        }, 200);
+      }
+      props.youtubeDisp.seekTo(targetTime, true);
+      props.socket.emit('youtube_seek', targetTime);
     }
   };
 
@@ -131,6 +147,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
       statusIcon={statusIcon}
       timed={timed}
       sliderOnChange={sliderOnChange}
+      fastTimed={fastTimed}
       duratioin={duration}
       valueLabelFormat={valueLabelFormat}
       playOrPause={playOrPause}
