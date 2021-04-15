@@ -5,6 +5,7 @@ import { YouTubePlayer } from 'youtube-player/dist/types';
 import { Presenter } from './Presenter';
 import { YouTubeProps } from 'react-youtube';
 import { RoomState } from '../../store/modules/roomModule';
+import Cookie from 'js-cookie';
 
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
@@ -62,6 +63,10 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     if (this.state.youtubeDisp) {
       this.setUpSocketListenner();
     }
+  }
+
+  componentWillUnmount(): void {
+    Cookie.set('streaming_volume', String(this.state.volume));
   }
 
   /** socket client Listennerを設定 */
@@ -199,7 +204,18 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       const { target } = event;
       this.setState({ youtubeDisp: target });
       // ボリューム情報のセット
-      const defaultVolume = target.getVolume();
+      const agent = navigator.userAgent.toLowerCase();
+      let defaultVolume = 0;
+      if (agent.match('chrome') && !agent.match('edg')) {
+        defaultVolume = target.getVolume();
+      } else {
+        const cookieVolume = Cookie.get('streaming_volume');
+        if (cookieVolume) {
+          defaultVolume = Number(cookieVolume);
+        } else {
+          defaultVolume = 20;
+        }
+      }
       let prev_flag: number | undefined = 0;
       this.setState(
         (prev) => {
