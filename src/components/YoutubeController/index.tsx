@@ -1,8 +1,5 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { State } from '../../store/store';
 import { Presenter } from './Presenter';
-import YouTube from 'react-youtube';
 import { YouTubePlayer } from 'youtube-player/dist/types';
 //import { PresenterProps } from './Presenter';
 
@@ -52,6 +49,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     statusCheck(props.videoStatus);
   }, [props.videoStatus]);
 
+  /** 再生バー処理 */
   const sliderOnChange = (changedtime: MouseEvent, value: number | number[]) => {
     if (props.youtubeDisp) {
       props.socket.emit('youtube_seek', value);
@@ -60,6 +58,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
+  /** 引数の秒数分動画をスキップする */
   const fastTimed = (value: number) => {
     if (props.youtubeDisp) {
       let targetTime = timed + value;
@@ -76,6 +75,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
+  /** 少数で渡された秒数を hh:mm:ss のフォーマットで返す */
   const valueLabelFormat = (value: number): string => {
     if (!value) {
       return '00:00';
@@ -93,6 +93,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
+  /** 動画再生状況をセット */
   const statusCheck = (status: number) => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
     switch (status) {
@@ -117,6 +118,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
+  /** 再生、停止ボタンクリック処理 */
   const playOrPause = () => {
     if (statusIcon === 'play') {
       props.youtubeDisp?.playVideo();
@@ -125,19 +127,16 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     }
   };
 
-  /**
-   * ミュート状態の切り替え
-   */
+  /** ミュート状態の切り替え */
   const volumeOnClick = () => {
     props.isMuted ? props.unMute() : props.mute();
   };
 
+  /** ボリューム変更処理 */
   const volumeSliderOnChange = (e: React.ChangeEvent, value: number | number[]) => {
     const num = Number(value);
-
     // ボリュームを変更
     props.changeVolume(num);
-
     // ボリュームの値を参照しミュート状態を切り替え
     num < 1 ? props.mute() : props.isMuted ? props.unMute() : false;
   };
