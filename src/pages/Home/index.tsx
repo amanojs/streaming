@@ -5,6 +5,7 @@ import roomModule from '../../store/modules/roomModule';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
+import Cookie from 'js-cookie';
 
 const Home: React.FC<PageProps> = (props: PageProps) => {
   const [mout, mountkeeper] = React.useState();
@@ -40,12 +41,18 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
 
   React.useEffect(() => {
     props.clearSocket();
+    // Cookie存在時ユーザネームセット処理
+    const cookieName = Cookie.get('streaming_name');
+    if (cookieName) {
+      setUserName({ value: cookieName, error: false, msg: '' });
+    }
   }, [mountkeeper]);
 
   const createRoomHandler = async () => {
     const socket = await props.getSocket();
     console.log(socket);
     if (socket) {
+      Cookie.set('streaming_name', userName.value);
       socket.emit('create_room', userName.value, (res: { result: boolean; room_id: string }) => {
         console.log(res);
         if (res.result) {

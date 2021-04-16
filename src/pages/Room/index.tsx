@@ -7,6 +7,7 @@ import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
+import Cookie from 'js-cookie';
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(null);
@@ -28,6 +29,11 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         if (roomId) {
           rec_socket.emit('check_room', roomId, (res: boolean) => {
             if (res) {
+              // Cookie存在時ユーザネームセット処理
+              const cookieName = Cookie.get('streaming_name');
+              if (cookieName) {
+                setUserName({ value: cookieName, error: false, msg: '' });
+              }
               // ルーム入出処理
               setEnterId(roomId);
               setNameDialog(true);
@@ -125,6 +131,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const enterSubmitHandler = () => {
     if (!socket) return;
     console.log('enterSubmitHandler', socket, enterId);
+    Cookie.set('streaming_name', userName.value);
     joinRoom(socket, { roomId: enterId });
   };
 
