@@ -34,7 +34,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
               if (cookieName) {
                 setUserName({ value: cookieName, error: false, msg: '' });
               }
-              // ルーム入出処理
+              // ルーム入室処理
               setEnterId(roomId);
               setNameDialog(true);
             } else {
@@ -53,7 +53,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   React.useEffect(() => {
     if (!socket) return;
     socket.on('user_joined', (res: { user: { id: string; name: string } }) => {
-      sendNotifiction(res.user.name + 'が入出しました', 'success');
+      sendNotifiction(res.user.name + 'が入室しました', 'success');
     });
     socket.on('user_left', (res: { user: { id: string; name: string } }) => {
       sendNotifiction(res.user.name + 'が退出しました', 'error');
@@ -61,14 +61,13 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   }, [socket]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
-    if (!socket) return sendNotifiction('入出に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
+    if (!socket) return sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
     socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
-      console.log('入出', res);
       if (res) {
         dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
         setNameDialog(false);
       } else {
-        sendNotifiction('入出に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
+        sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
         history.push('/');
       }
     });
