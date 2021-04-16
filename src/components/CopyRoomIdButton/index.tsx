@@ -17,7 +17,7 @@ export const CopyRoomIdButton: React.FC = () => {
 
     // クリップボードにコピー
     document.execCommand('copy');
-
+    urlInputRef.current?.blur();
     // 通知
     enqueueSnackbar('招待URLをコピーしました。', {
       variant: 'info',
