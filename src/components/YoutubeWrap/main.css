@@ -12,12 +12,12 @@
 
 @media screen and (min-width: 1500px){
     .youtube_display{
-        height: 650px;
+        height: 500px;
     }
 }
 
 @media screen and (min-width: 1920px){
     .youtube_display{
-        height: 700px;
+        height: 640px;
     }
 }

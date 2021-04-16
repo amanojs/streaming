@@ -20,7 +20,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         {...{ onClick: props.onClick, disableElevation: true, variant: 'contained', color: 'secondary' }}
         style={{ borderRadius: '1000px' }}
       >
-        Copy URL
+        INVITE ROOM
       </Button>
     </React.Fragment>
   );
