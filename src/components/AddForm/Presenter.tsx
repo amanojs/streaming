@@ -15,7 +15,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           fullWidth
           variant="outlined"
           placeholder="YouTube Movie URL"
-          style={{ borderRadius: 'none', background: '#f9f9f9' }}
+          style={{ borderRadius: 'none', background: '#f9f9f9', height: '100%' }}
           value={props.videoId}
           onChange={(e) => props.onChange(e.target.value)}
         ></TextField>
@@ -25,8 +25,8 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           fullWidth
           color="secondary"
           variant="contained"
-          disableElevation
           style={{ height: '100%' }}
+          disableElevation
           onClick={props.addMovieHandler}
         >
           変更

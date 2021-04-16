@@ -5,6 +5,7 @@
   }
   
   svg#icon-audio-disc {
+    display: none;
     margin: auto;
     width: 80%;
     stroke: #fff;

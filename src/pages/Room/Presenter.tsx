@@ -22,13 +22,13 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
     <React.Fragment>
       {props.room.roomId && props.socket ? (
         <Grid container justify="center" style={{ paddingBottom: '50px' }}>
-          <Grid item xs={12}>
+          <Grid item xs={11} lg={9} xl={10}>
             <Box>
               <YoutubeWrap socket={props.socket} room={props.room} />
             </Box>
           </Grid>
-          <Grid item xs={10}>
-            <Box boxSizing="border-box" padding="20px" borderRadius="2px" style={{ background: '#fff' }}>
+          <Grid item xs={11} lg={9} xl={10}>
+            <Box boxSizing="border-box" padding="10px 11px" borderRadius="2px" style={{ background: '#fff' }}>
               <AddForm socket={props.socket} />
             </Box>
           </Grid>
