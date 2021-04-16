@@ -182,6 +182,15 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     return isPlaying;
   };
 
+  /** スマートフォンからのアクセスかどうかの判定 */
+  isSmartPhone = (): boolean => {
+    if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   /** react-youtubeコンポーネントの設定 */
   player: YouTubeProps = {
     onPlay: ({ target, data }: { target: YouTubePlayer; data: number }) => {
