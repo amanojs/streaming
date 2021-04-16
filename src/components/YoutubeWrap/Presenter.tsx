@@ -28,7 +28,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
     <React.Fragment>
       <Grid container justify="center">
         {/* 最大化の場合は↓を変更 */}
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <Box paddingY={1}>
             <Grid container>
               <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
@@ -37,7 +37,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               <Grid style={{ background: 'black' }} item xs={12}>
                 <YouTube {...props.player} opts={props.opts} className="youtube_display" />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item style={{ background: '#000' }} xs={12}>
                 <YoutubeController {...props.controller} />
               </Grid>
             </Grid>
