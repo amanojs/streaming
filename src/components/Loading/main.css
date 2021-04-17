@@ -1,0 +1,10 @@
+.loadBox{
+    height: 100vh;
+}
+
+@supports (-webkit-touch-callout: none) {
+    .loadBox {
+      /* Safari用のハック */
+      height: -webkit-fill-available;
+    }
+}

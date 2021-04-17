@@ -23,12 +23,14 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <div className="base">
       <Grid container justify="center" alignItems="center" className={classes.baseGrid}>
-        <Grid container xs={11} sm={9} md={6} lg={4} xl={3} spacing={6}>
-          <Grid item className="logo" xs={12}>
-            <span>S</span>treaming!!
-          </Grid>
-          <Grid item xs={12}>
-            <CreateForm width="100%" head="ルーム作成" btn="作成" {...props.createForm} />
+        <Grid item xs={11} sm={9} md={6} lg={4} xl={3} style={{ marginBottom: '100px' }}>
+          <Grid container spacing={4}>
+            <Grid item className="logo" xs={12}>
+              <span>S</span>treaming!!
+            </Grid>
+            <Grid item xs={12}>
+              <CreateForm width="100%" head="ルーム作成" btn="作成" {...props.createForm} />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
