@@ -84,7 +84,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           />
         </Grid>
         <Grid container alignItems="center" style={{ padding: '0 20px 10px 20px' }}>
-          <Grid item xs={3} style={{ color: '#777' }}>
+          <Grid item xs={1} sm={3} md={3} lg={3} xl={3} style={{ color: '#777' }}>
             <Grid container alignItems="center" wrap="wrap">
               <Hidden xsDown>
                 <Grid item sm={12} md={12} lg={5} xl={3}>
@@ -92,19 +92,17 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   <span>{props.valueLabelFormat(props.duratioin)}</span>
                 </Grid>
               </Hidden>
-              <Hidden xsDown>
-                <Grid item sm={12} md={12} lg={7} xl={5}>
-                  <Volume
-                    isMute={props.isMute}
-                    onChange={props.volumeSliderOnChange}
-                    onClick={props.volumeOnClick}
-                    volume={props.volume}
-                  ></Volume>
-                </Grid>
-              </Hidden>
+              <Grid item sm={12} md={12} lg={7} xl={5}>
+                <Volume
+                  isMute={props.isMute}
+                  onChange={props.volumeSliderOnChange}
+                  onClick={props.volumeOnClick}
+                  volume={props.volume}
+                ></Volume>
+              </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Grid item xs={10} sm={6} md={6} lg={6} xl={6}>
             <Grid container justify="center" alignItems="center" spacing={1}>
               <Grid item>
                 <IconButton size="medium" onClick={() => props.fastTimed(-15)}>
@@ -127,7 +125,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={3}></Grid>
+          <Grid item xs={1} sm={3} md={3} lg={3} xl={3}></Grid>
         </Grid>
       </Grid>
     </React.Fragment>
