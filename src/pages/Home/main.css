@@ -33,6 +33,33 @@
     color: #55E6C1;
 }
 
+@media screen and (max-width: 600px) {
+    .logo{
+        font-size: 50px;
+    }
+    .logo > span{
+        font-size: 70px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .logo{
+        font-size: 40px;
+    }
+    .logo > span{
+        font-size: 60px;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .logo{
+        font-size: 30px;
+    }
+    .logo > span{
+        font-size: 40px;
+    }
+}
+
 .wave {
     position: absolute;
     bottom: 0;
