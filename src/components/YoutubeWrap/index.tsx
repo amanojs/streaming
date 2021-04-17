@@ -309,7 +309,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        if (!this.isSmartPhone) {
+        if (!this.isSmartPhone()) {
           this.unMute();
         }
         resolve(true);
