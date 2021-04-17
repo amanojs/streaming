@@ -24,19 +24,6 @@ interface YoutubeWrapState {
   opts: YouTubeProps['opts'];
 }
 
-const defaultOpts: YouTubeProps['opts'] = {
-  width: '100%',
-  height: '700px',
-  playerVars: {
-    controls: 1,
-    rel: 0,
-    playsinline: 1,
-    fs: 0,
-    disablekb: 1,
-    modestbranding: 1
-  }
-};
-
 export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapState> {
   constructor(props: YoutubeWrapProps) {
     super(props);
@@ -49,7 +36,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       volume: 0, // ボリューム
       volumeLog: 0, // 変更前のボリューム
       isMuted: true, // ミュートフラグ
-      opts: defaultOpts // YouTubePlayerのオプション
+      opts: this.defaultOpts(this.isSmartPhone()) // YouTubePlayerのオプション
     };
 
     this.mute = this.mute.bind(this);
@@ -58,6 +45,19 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   socket = this.props.socket;
+
+  defaultOpts = (isSmartPhone: boolean): YouTubeProps['opts'] => ({
+    width: '100%',
+    height: '700px',
+    playerVars: {
+      controls: isSmartPhone ? 0 : 1,
+      rel: 0,
+      playsinline: 1,
+      fs: 0,
+      disablekb: 1,
+      modestbranding: 1
+    }
+  });
 
   componentDidUpdate(): void {
     if (this.state.youtubeDisp) {
@@ -214,59 +214,85 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       this.setState({ youtubeDisp: target });
       // ボリューム情報のセット
       const agent = navigator.userAgent.toLowerCase();
-      let defaultVolume = 0;
-      if (agent.match('chrome') && !agent.match('edg')) {
-        defaultVolume = target.getVolume();
-      } else {
-        const cookieVolume = Cookie.get('streaming_volume');
-        if (cookieVolume) {
-          defaultVolume = Number(cookieVolume);
+
+      // スマホかどうか
+      if (this.isSmartPhone()) {
+        // スマホの場合
+        this.mute();
+
+        if (this.props.room.isOwner) {
+          target.cueVideoById('b6-2P8RgT0A');
+          this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+            this.setUpBuffer(target).then(() => {
+              console.log('Buffer完了');
+              this.setState({ isFirst: false });
+            });
+          });
         } else {
-          defaultVolume = 20;
+          this.socket.emit('youtube_sync');
         }
-      }
-      let prev_flag: number | undefined = 0;
-      this.setState(
-        (prev) => {
-          // コントローラ表示時のみボリュームログに保存
-          prev_flag = prev.opts?.playerVars?.controls;
-          if (prev.opts?.playerVars?.controls === 1) {
-            return { ...prev, volumeLog: defaultVolume };
+      } else {
+        // それ以外の場合
+        let defaultVolume = 0;
+
+        // デフォルトボリュームの取得
+        if (agent.match('chrome') && !agent.match('edg')) {
+          defaultVolume = target.getVolume();
+        } else {
+          const cookieVolume = Cookie.get('streaming_volume');
+          if (cookieVolume) {
+            defaultVolume = Number(cookieVolume);
           } else {
-            return { ...prev };
+            defaultVolume = 20;
           }
-        },
-        () => {
-          // コントローラを非表示にする
-          this.setState(
-            (prev) => ({
-              opts: {
-                ...prev.opts,
-                playerVars: {
-                  ...prev.opts?.playerVars,
-                  controls: 0
-                }
-              }
-            }),
-            () => {
-              target.setVolume(0);
-              if (this.props.room.isOwner) {
-                if (prev_flag === 0) {
-                  target.cueVideoById('b6-2P8RgT0A');
-                  this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
-                    this.setUpBuffer(target).then(() => {
-                      console.log('Buffer完了');
-                      this.setState({ isFirst: false });
-                    });
-                  });
-                }
-              } else {
-                this.socket.emit('youtube_sync');
-              }
-            }
-          );
         }
-      );
+
+        /**  コントローラのが表示されているかどうか */
+        let prev_flag: number | undefined = 0;
+
+        this.setState(
+          (prev) => {
+            // コントローラ表示時のみボリュームログに保存
+            prev_flag = prev.opts?.playerVars?.controls;
+
+            if (prev.opts?.playerVars?.controls === 1) {
+              return { ...prev, volumeLog: defaultVolume };
+            } else {
+              return { ...prev };
+            }
+          },
+          () => {
+            // コントローラを非表示にする
+            this.setState(
+              (prev) => ({
+                opts: {
+                  ...prev.opts,
+                  playerVars: {
+                    ...prev.opts?.playerVars,
+                    controls: 0
+                  }
+                }
+              }),
+              () => {
+                target.setVolume(0);
+                if (this.props.room.isOwner) {
+                  if (prev_flag === 0) {
+                    target.cueVideoById('b6-2P8RgT0A');
+                    this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+                      this.setUpBuffer(target).then(() => {
+                        console.log('Buffer完了');
+                        this.setState({ isFirst: false });
+                      });
+                    });
+                  }
+                } else {
+                  this.socket.emit('youtube_sync');
+                }
+              }
+            );
+          }
+        );
+      }
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
@@ -283,7 +309,9 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       window.setTimeout(() => {
         target.pauseVideo();
         target.seekTo(0, true);
-        this.unMute();
+        if (!this.isSmartPhone) {
+          this.unMute();
+        }
         resolve(true);
       }, 1000);
     });
