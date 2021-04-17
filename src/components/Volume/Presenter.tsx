@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Slider, IconButton, withStyles } from '@material-ui/core';
+import { Slider, IconButton, withStyles, Hidden } from '@material-ui/core';
 import { VolumeOff, VolumeUp } from '@material-ui/icons';
 
 interface PresenterProps {
@@ -7,6 +7,7 @@ interface PresenterProps {
   volume: number;
   onChange: (e: React.ChangeEvent<any>, value: number | number[]) => void;
   onClick: () => void;
+  isSmartPhone: () => boolean;
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -15,18 +16,22 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
       <IconButton size="small" color="secondary" onClick={props.onClick}>
         {props.isMute ? <VolumeOff></VolumeOff> : <VolumeUp></VolumeUp>}
       </IconButton>
-      <VolumeSlider
-        valueLabelDisplay="off"
-        step={0.001}
-        min={0.0}
-        max={100.0}
-        value={props.volume}
-        onChange={props.onChange}
-        style={{
-          width: '100%',
-          marginLeft: '12px'
-        }}
-      ></VolumeSlider>
+      <Hidden xsDown>
+        {!props.isSmartPhone() && (
+          <VolumeSlider
+            valueLabelDisplay="off"
+            step={0.001}
+            min={0.0}
+            max={100.0}
+            value={props.volume}
+            onChange={props.onChange}
+            style={{
+              width: '100%',
+              marginLeft: '12px'
+            }}
+          ></VolumeSlider>
+        )}
+      </Hidden>
     </div>
   );
 };
