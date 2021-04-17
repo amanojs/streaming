@@ -24,37 +24,39 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <Card className={classes.form_card}>
       <Grid container justify="center" spacing={1}>
-        <Grid container xs={10} spacing={1}>
-          <Grid item xs={12}>
-            <Box
-              className="create_room_head"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              lineHeight="0px"
-              marginBottom="30px"
-            >
-              <span>{props.head}</span>
-            </Box>
-          </Grid>
-          {props.inputs.map((input: InputSub) => {
-            return (
-              <Grid item xs={12} key={input.label}>
-                <InputText
-                  label={input.label}
-                  error={input.error}
-                  msg={input.msg}
-                  placeholder={input.placeholder}
-                  value={input.value}
-                  onChange={input.onChange}
-                />
-              </Grid>
-            );
-          })}
-          <Grid item xs={12}>
-            <Button fullWidth variant="contained" disableElevation color="secondary" onClick={props.submitEvent}>
-              {props.btn}
-            </Button>
+        <Grid item xs={10}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Box
+                className="create_room_head"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                lineHeight="0px"
+                marginBottom="30px"
+              >
+                <span>{props.head}</span>
+              </Box>
+            </Grid>
+            {props.inputs.map((input: InputSub) => {
+              return (
+                <Grid item xs={12} key={input.label}>
+                  <InputText
+                    label={input.label}
+                    error={input.error}
+                    msg={input.msg}
+                    placeholder={input.placeholder}
+                    value={input.value}
+                    onChange={input.onChange}
+                  />
+                </Grid>
+              );
+            })}
+            <Grid item xs={12}>
+              <Button fullWidth variant="contained" disableElevation color="secondary" onClick={props.submitEvent}>
+                {props.btn}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

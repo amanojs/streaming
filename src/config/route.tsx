@@ -30,7 +30,7 @@ const routebases: Array<RouteBase> = [
 export const Routes: React.FC<PageProps> = (props) => {
   const makeRoute = (routebase: RouteBase) => {
     return (
-      <Route path={routebase.path} exact={routebase.exact}>
+      <Route path={routebase.path} exact={routebase.exact} key={routebase.name}>
         {routebase.path !== '/' ? <Header /> : false}
         <routebase.component {...props} />
       </Route>
