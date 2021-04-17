@@ -6,7 +6,7 @@ export const Header: React.FC = () => {
   const history = useHistory();
 
   const backClick = () => {
-    history.goBack();
+    history.push('/');
   };
   return <Presenter backClick={backClick} />;
 };
