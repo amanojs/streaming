@@ -19,6 +19,7 @@ const DefaultProps: CreateFormProps = {
   width: '400px',
   head: 'ヘッドタイトル',
   btn: '送信',
+  load: false,
   inputs: [
     {
       label: 'ユーザネーム',

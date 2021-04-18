@@ -13,6 +13,7 @@ interface PresenterProps {
   nameDialog: boolean;
   createForm: {
     inputs: InputSub[];
+    load: boolean;
     onSubmit: () => void;
   };
 }
