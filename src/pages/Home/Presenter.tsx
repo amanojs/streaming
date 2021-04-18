@@ -29,7 +29,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
             <Grid item className="logo" xs={12}>
               <Grid container justify="center" spacing={0}>
                 <Grid item xs={3}>
-                  <img src={Logo} width="100%" alt="Logo" />
+                  <img src={Logo} width="100%" height="auto" alt="Logo" />
                 </Grid>
                 <Grid item xs={12}>
                   <span>S</span>treaming!!
