@@ -8,6 +8,7 @@ import './main.css';
 interface PresenterProps {
   createForm: {
     inputs: InputSub[];
+    load: boolean;
     onSubmit: () => any;
   };
 }

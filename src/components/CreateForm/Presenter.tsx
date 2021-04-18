@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Card, Button, Box } from '@material-ui/core';
+import { Grid, Card, Button, Box, CircularProgress } from '@material-ui/core';
 import { InputText } from '../InputText';
 import { InputSub } from './index';
 import './main.css';
@@ -10,6 +10,7 @@ export interface PresenterProps {
   head: string;
   btn: string;
   inputs: InputSub[];
+  load: boolean;
   submitEvent: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
@@ -55,8 +56,15 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                 );
               })}
               <Grid item xs={12}>
-                <Button type="submit" fullWidth variant="contained" disableElevation color="secondary">
-                  {props.btn}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={props.load}
+                  disableElevation
+                  color="secondary"
+                >
+                  {props.load ? <CircularProgress size={24} style={{ color: '#fff' }} /> : props.btn}
                 </Button>
               </Grid>
             </Grid>

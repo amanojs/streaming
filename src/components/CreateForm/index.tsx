@@ -13,6 +13,8 @@ export interface CreateFormProps {
   head: string;
   /** フォームのサブミットボタンのタイトル */
   btn: string;
+  /** ロード中か */
+  load: boolean;
   /** InputText型にバリデーション処理を加えたインプットの配列 */
   inputs: InputSub[];
   /** サブミット処理(オールバリデーション処理の後に実行されます) */
@@ -38,13 +40,20 @@ export const CreateForm: React.FC<CreateFormProps> = (props: CreateFormProps) =>
   const submitEvent = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateAll()) {
-      return console.log('未入力の内容があります');
+      return;
     }
-    props.onSubmit();
+    await props.onSubmit();
   };
 
   return (
-    <Presenter width={props.width} head={props.head} btn={props.btn} inputs={props.inputs} submitEvent={submitEvent} />
+    <Presenter
+      width={props.width}
+      head={props.head}
+      btn={props.btn}
+      inputs={props.inputs}
+      load={props.load}
+      submitEvent={submitEvent}
+    />
   );
 };
 CreateForm.defaultProps = {
