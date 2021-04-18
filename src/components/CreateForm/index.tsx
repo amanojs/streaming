@@ -35,7 +35,8 @@ export const CreateForm: React.FC<CreateFormProps> = (props: CreateFormProps) =>
     return errorFlag;
   };
 
-  const submitEvent = async () => {
+  const submitEvent = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (validateAll()) {
       return console.log('未入力の内容があります');
     }
