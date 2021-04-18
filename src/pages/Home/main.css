@@ -43,7 +43,7 @@ body{
     z-index: 2;
     text-align: center;
 }
-.logo > span{
+.logo span{
     font-size: 80px;
     color: #55E6C1;
 }
