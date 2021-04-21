@@ -43,6 +43,9 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
               history.push('/');
             }
           });
+        } else {
+          sendNotifiction('ルームが存在しませんでした', 'error', { horizontal: 'center', vertical: 'top' });
+          history.push('/');
         }
       }
     });
