@@ -221,8 +221,8 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          target.cueVideoById('b6-2P8RgT0A');
-          this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+          target.cueVideoById('ZCY5JS-nuz0');
+          this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
             this.setUpBuffer(target).then(() => {
               // console.log('Buffer完了');
               this.setState({ isFirst: false });
@@ -277,8 +277,8 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    target.cueVideoById('b6-2P8RgT0A');
-                    this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+                    target.cueVideoById('ZCY5JS-nuz0');
+                    this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
                       this.setUpBuffer(target).then(() => {
                         // console.log('Buffer完了');
                         this.setState({ isFirst: false });
