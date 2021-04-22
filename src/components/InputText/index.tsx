@@ -20,7 +20,17 @@ export interface InputTextProps {
 export const InputText: React.FC<InputTextProps> = (props: InputTextProps) => {
   return (
     <div>
-      <div style={{ color: '#606060', padding: '0 0 3px 0', fontSize: '13px', fontWeight: 'bold' }}>{props.label}</div>
+      <div
+        style={{
+          color: '#606060',
+          padding: '0 0 3px 0',
+          fontSize: '13px',
+          fontWeight: 'bold',
+          fontFamily: 'Noto Sans JP'
+        }}
+      >
+        {props.label}
+      </div>
       <TextField
         fullWidth
         error={props.error}

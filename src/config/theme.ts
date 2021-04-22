@@ -18,21 +18,7 @@ export const theme = createMuiTheme({
     }
   },
   typography: {
-    fontFamily: [
-      'Noto Sans JP',
-      'Lato',
-      '游ゴシック Medium',
-      '游ゴシック体',
-      'Yu Gothic Medium',
-      'YuGothic',
-      'ヒラギノ角ゴ ProN',
-      'Hiragino Kaku Gothic ProN',
-      'メイリオ',
-      'Meiryo',
-      'ＭＳ Ｐゴシック',
-      'MS PGothic',
-      'sans-serif'
-    ].join(',')
+    fontFamily: ['Noto Sans JP', 'Lato', '游ゴシック Medium', '游ゴシック体'].join(',')
     /* fontSize: 16,
         h1: {
           fontSize: '1.75rem',
