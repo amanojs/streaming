@@ -1,0 +1,125 @@
+body{
+    position: relative;
+    height: 100vh;
+}
+
+.base {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    animation: gradient 12s ease infinite , fadein 1.4s ease;
+    background: linear-gradient(45deg, #23d5ab,#23a6d5,#ee7752 );
+    background-size: 190% 190%;
+}
+
+@supports (-webkit-touch-callout: none) {
+    body {
+      /* Safari用のハック */
+      height: -webkit-fill-available;
+    }
+}
+
+@keyframes fadein {
+0% {
+    opacity: 0;
+}
+100% {
+    opacity: 1;
+}
+}
+
+.logo{
+    font-family: 'Fredoka One', cursive;
+    font-weight: bold;
+    letter-spacing: 3px;
+    position: relative;
+    font-size: 60px;
+    color: #fff;
+    user-select: none;
+    z-index: 2;
+    text-align: center;
+}
+.logo span{
+    font-size: 80px;
+    color: #55E6C1;
+}
+
+@media screen and (max-width: 600px) {
+    .logo{
+        font-size: 50px;
+    }
+    .logo > span{
+        font-size: 70px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .logo{
+        font-size: 40px;
+        letter-spacing: 0px;
+    }
+    .logo > span{
+        font-size: 60px;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .logo{
+        font-size: 30px;
+    }
+    .logo > span{
+        font-size: 40px;
+    }
+}
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 143px;
+    background: url(../../assets/wave.png);
+    animation: wave 10s linear infinite;
+}
+.wave::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.6;
+    width: 100%;
+    height: 143px;
+    background: url(../../assets/wave.png);
+    animation: wave-reverse 10s linear infinite;
+}
+.wave::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.4;
+    width: 100%;
+    height: 143px;
+    background: url(../../assets/wave.png);
+    animation-delay: -5s;
+    animation: wave 20s linear infinite;
+}
+@keyframes wave {
+0% {
+    background-position: 0;
+}
+100% {
+    background-position: 1360px;
+}
+}
+
+@keyframes wave-reverse {
+0% {
+    background-position: 1360px;
+}
+100% {
+    background-position: 0;
+}
+}

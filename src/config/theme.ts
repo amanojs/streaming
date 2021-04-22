@@ -3,31 +3,22 @@ import { createMuiTheme } from '@material-ui/core/styles';
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#1976d2'
+      main: '#fff',
+      contrastText: '#555'
     },
     secondary: {
-      main: '#dc004e'
+      main: '#1dd1a1',
+      contrastText: '#fefefe'
+    },
+    info: {
+      main: '#1289A7'
     },
     background: {
       default: '#fffafa'
     }
   },
   typography: {
-    fontFamily: [
-      'Noto Sans JP',
-      'Lato',
-      '游ゴシック Medium',
-      '游ゴシック体',
-      'Yu Gothic Medium',
-      'YuGothic',
-      'ヒラギノ角ゴ ProN',
-      'Hiragino Kaku Gothic ProN',
-      'メイリオ',
-      'Meiryo',
-      'ＭＳ Ｐゴシック',
-      'MS PGothic',
-      'sans-serif'
-    ].join(',')
+    fontFamily: ['Noto Sans JP', 'Lato', '游ゴシック Medium', '游ゴシック体'].join(',')
     /* fontSize: 16,
         h1: {
           fontSize: '1.75rem',
