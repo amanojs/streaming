@@ -352,6 +352,12 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.state.volumeLog > 1 ? this.changeVolume(this.state.volumeLog) : this.changeVolume(30);
   };
 
+  /** ボリュームバー操作時のミュート処理 */
+  unMuteForVolumeBar = (): void => {
+    this.setState({ isMuted: false });
+    this.state.youtubeDisp?.unMute();
+  };
+
   render(): JSX.Element {
     return (
       <React.Fragment>
@@ -367,6 +373,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
             isMuted: this.state.isMuted,
             mute: this.mute,
             unMute: this.unMute,
+            unMuteForVolumeBar: this.unMuteForVolumeBar,
             changeVolume: this.changeVolume,
             setVolumeLog: this.setVolumeLog
           }}
