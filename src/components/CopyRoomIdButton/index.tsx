@@ -12,7 +12,6 @@ export const CopyRoomIdButton: React.FC = () => {
 
   const onClick = (): void => {
     // 選択
-    console.log(!!urlInputRef.current);
     urlInputRef.current?.select();
 
     // クリップボードにコピー

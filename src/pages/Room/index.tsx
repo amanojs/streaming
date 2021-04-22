@@ -135,7 +135,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const enterSubmitHandler = () => {
     if (!socket) return;
     setLoad(true);
-    console.log('enterSubmitHandler', socket, enterId);
+    // console.log('enterSubmitHandler', socket, enterId);
     Cookie.set('streaming_name', userName.value);
     joinRoom(socket, { roomId: enterId });
   };

@@ -52,11 +52,11 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
   const createRoomHandler = async () => {
     setLoad(true);
     const socket = await props.getSocket();
-    console.log(socket);
+    // console.log(socket);
     if (socket) {
       Cookie.set('streaming_name', userName.value);
       socket.emit('create_room', userName.value, (res: { result: boolean; room_id: string }) => {
-        console.log(res);
+        // console.log(res);
         if (res.result) {
           dispach(roomModule.actions.setRoom({ roomId: res.room_id, userName: userName.value, isOwner: true }));
           history.push('/room' + '?room_id=' + res.room_id);
