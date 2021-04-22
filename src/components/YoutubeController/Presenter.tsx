@@ -87,7 +87,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           <Grid item xs={1} sm={3} md={3} lg={3} xl={3} style={{ color: '#777' }}>
             <Grid container alignItems="center" wrap="wrap">
               <Hidden xsDown>
-                <Grid item sm={12} md={12} lg={5} xl={3}>
+                <Grid item sm={12} md={12} lg={5} xl={3} style={{ fontFamily: 'Noto Sans JP', fontSize: '14px' }}>
                   <span>{props.valueLabelFormat(props.timed)}</span>/
                   <span>{props.valueLabelFormat(props.duratioin)}</span>
                 </Grid>

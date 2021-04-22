@@ -19,6 +19,7 @@ export interface PresenterProps {
     setVolumeLog: (num: number) => void;
     mute: () => void;
     unMute: () => void;
+    unMuteForVolumeBar: () => void;
   };
   opts: YouTubeProps['opts'];
 }

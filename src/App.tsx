@@ -16,13 +16,13 @@ const App: React.FC = () => {
 
   // websocketに接続し、socket clientを返却
   const getSocket = (): Promise<SocketIOClient.Socket> => {
-    console.log('getSocket');
+    // console.log('getSocket');
     return new Promise((resolve) => {
       if (!socket) {
         // 接続開始
         const client = io.connect(process.env.REACT_APP_API_URL as string);
         client.on('connect', () => {
-          console.log('connected');
+          // console.log('connected');
           // 別ページからも参照できるようにstateにセット
           setSocket(client, function () {
             // 接続が接続が成功した際にsocket clientを返却
@@ -39,7 +39,7 @@ const App: React.FC = () => {
   const clearSocket = (): void => {
     socket?.disconnect();
     setSocket(null, () => {
-      console.log('clear socket');
+      // console.log('clear socket');
     });
   };
 

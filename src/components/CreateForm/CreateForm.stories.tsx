@@ -28,16 +28,16 @@ const DefaultProps: CreateFormProps = {
       error: false,
       msg: '',
       onChange: function (val) {
-        console.log('onChange');
+        // console.log('onChange');
       },
       validate: (val) => {
-        console.log('validate');
+        // console.log('validate');
         return { error: true, msg: 'エラーメッセージ' };
       }
     }
   ],
   onSubmit: () => {
-    console.log('onSubmit');
+    // console.log('onSubmit');
   }
 };
 
@@ -54,10 +54,10 @@ ErrorProps.inputs = [
     error: true,
     msg: '入力値が誤っています',
     onChange: function (val) {
-      console.log('onChange');
+      // console.log('onChange');
     },
     validate: (val) => {
-      console.log('validate');
+      // console.log('validate');
       return { error: true, msg: 'エラーメッセージ' };
     }
   }
@@ -75,14 +75,14 @@ MultiInputProps.inputs = [
     error: false,
     msg: '',
     onChange: function (val) {
-      console.log('onChange');
+      // console.log('onChange');
     },
     validate: (val) => {
-      console.log('validate');
+      // console.log('validate');
       return { error: true, msg: 'エラーメッセージ' };
     }
   }
 ];
-console.log(MultiInputProps);
+// console.log(MultiInputProps);
 
 MultiInput.args = MultiInputProps;

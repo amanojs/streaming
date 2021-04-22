@@ -10,3 +10,5 @@ export const Header: React.FC = () => {
   };
   return <Presenter backClick={backClick} />;
 };
+
+export default Header;

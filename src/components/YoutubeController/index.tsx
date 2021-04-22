@@ -11,6 +11,7 @@ export interface YoutubeControllerProps {
   isMuted: boolean;
   mute: () => void;
   unMute: () => void;
+  unMuteForVolumeBar: () => void;
   changeVolume: (num: number) => void;
   setVolumeLog: (num: number) => void;
 }
@@ -153,7 +154,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     // ボリュームを変更
     props.changeVolume(num);
     // ボリュームの値を参照しミュート状態を切り替え
-    num < 1 ? props.mute() : props.isMuted ? props.unMute() : false;
+    num < 1 ? props.mute() : props.isMuted ? props.unMuteForVolumeBar() : false;
   };
 
   return (
