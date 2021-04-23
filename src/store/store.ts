@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
 });
 
 export const setUpStore = () => {
-  const middlewares = [...getDefaultMiddleware(), logger];
+  const middlewares = [...getDefaultMiddleware() /* , logger */];
   const store = configureStore({
     reducer: rootReducer,
     middleware: middlewares

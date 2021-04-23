@@ -85,7 +85,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_add_movie', (movie_id: string) => {
       if (!this.state.youtubeDisp) return;
-      console.log('movieId', movie_id);
+      // console.log('movieId', movie_id);
       this.setState({ videoId: movie_id });
       this.state.youtubeDisp.cueVideoById(movie_id);
       this.setUpBuffer(this.state.youtubeDisp).then(() => {
@@ -95,7 +95,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_pause', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      console.log('listen!pause!', time);
+      // console.log('listen!pause!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.pauseVideo();
         this.state.youtubeDisp?.seekTo(time, true);
@@ -104,7 +104,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_play', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      console.log('listen!play!', time);
+      // console.log('listen!play!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.playVideo();
       });
@@ -136,7 +136,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
       if (!this.state.youtubeDisp) return;
-      console.log('newplayingData', res);
+      // console.log('newplayingData', res);
       if (res.movie_id) {
         this.state.youtubeDisp.cueVideoById(res.movie_id);
         this.setState({ videoId: res.movie_id });
@@ -221,10 +221,10 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          target.cueVideoById('b6-2P8RgT0A');
-          this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+          target.cueVideoById('ZCY5JS-nuz0');
+          this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
             this.setUpBuffer(target).then(() => {
-              console.log('Buffer完了');
+              // console.log('Buffer完了');
               this.setState({ isFirst: false });
             });
           });
@@ -277,10 +277,10 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    target.cueVideoById('b6-2P8RgT0A');
-                    this.setState({ videoId: 'b6-2P8RgT0A' }, () => {
+                    target.cueVideoById('ZCY5JS-nuz0');
+                    this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
                       this.setUpBuffer(target).then(() => {
-                        console.log('Buffer完了');
+                        // console.log('Buffer完了');
                         this.setState({ isFirst: false });
                       });
                     });
@@ -352,6 +352,12 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.state.volumeLog > 1 ? this.changeVolume(this.state.volumeLog) : this.changeVolume(30);
   };
 
+  /** ボリュームバー操作時のミュート処理 */
+  unMuteForVolumeBar = (): void => {
+    this.setState({ isMuted: false });
+    this.state.youtubeDisp?.unMute();
+  };
+
   render(): JSX.Element {
     return (
       <React.Fragment>
@@ -367,6 +373,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
             isMuted: this.state.isMuted,
             mute: this.mute,
             unMute: this.unMute,
+            unMuteForVolumeBar: this.unMuteForVolumeBar,
             changeVolume: this.changeVolume,
             setVolumeLog: this.setVolumeLog
           }}

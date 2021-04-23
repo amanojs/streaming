@@ -13,6 +13,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(null);
   const [nameDialog, setNameDialog] = React.useState<boolean>(false);
   const [enterId, setEnterId] = React.useState<string>('');
+  const [load, setLoad] = React.useState<boolean>(false);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispach = useDispatch();
@@ -42,6 +43,9 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
               history.push('/');
             }
           });
+        } else {
+          sendNotifiction('ルームが存在しませんでした', 'error', { horizontal: 'center', vertical: 'top' });
+          history.push('/');
         }
       }
     });
@@ -70,6 +74,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
         history.push('/');
       }
+      setLoad(false);
     });
   };
 
@@ -129,7 +134,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   const enterSubmitHandler = () => {
     if (!socket) return;
-    console.log('enterSubmitHandler', socket, enterId);
+    setLoad(true);
+    // console.log('enterSubmitHandler', socket, enterId);
     Cookie.set('streaming_name', userName.value);
     joinRoom(socket, { roomId: enterId });
   };
@@ -139,7 +145,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       socket={socket}
       room={room}
       nameDialog={nameDialog}
-      createForm={{ inputs, onSubmit: enterSubmitHandler }}
+      createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
     />
   );
 };

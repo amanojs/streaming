@@ -15,8 +15,7 @@ export const PlayingBoard: React.FC<PlayingBoardProps> = (props: PlayingBoardPro
     getTitle();
   }, [props.videoId]);
   const getTitle = () => {
-    console.log('youtube videoId', props.videoId);
-    axios
+    /* axios
       .get(`https://www.googleapis.com/youtube/v3/search?key=${APIKEY}&part=id,snippet`, {
         params: { q: props.videoId }
       })
@@ -30,7 +29,7 @@ export const PlayingBoard: React.FC<PlayingBoardProps> = (props: PlayingBoardPro
             setTitle('動画タイトルを取得できませんでした');
           }
         }
-      });
+      }); */
   };
   return <Presenter title={title} />;
 };

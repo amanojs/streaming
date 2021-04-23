@@ -10,6 +10,7 @@ import Cookie from 'js-cookie';
 const Home: React.FC<PageProps> = (props: PageProps) => {
   const [mout, mountkeeper] = React.useState();
   const [userName, setUserName] = React.useState({ value: '', error: false, msg: '' });
+  const [load, setLoad] = React.useState<boolean>(false);
 
   const dispach = useDispatch();
   const history = useHistory();
@@ -49,20 +50,24 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
   }, [mountkeeper]);
 
   const createRoomHandler = async () => {
+    setLoad(true);
     const socket = await props.getSocket();
-    console.log(socket);
+    // console.log(socket);
     if (socket) {
       Cookie.set('streaming_name', userName.value);
       socket.emit('create_room', userName.value, (res: { result: boolean; room_id: string }) => {
-        console.log(res);
+        // console.log(res);
         if (res.result) {
           dispach(roomModule.actions.setRoom({ roomId: res.room_id, userName: userName.value, isOwner: true }));
           history.push('/room' + '?room_id=' + res.room_id);
         }
+        setLoad(false);
       });
+    } else {
+      setLoad(false);
     }
   };
-  return <Presenter createForm={{ inputs, onSubmit: createRoomHandler }} />;
+  return <Presenter createForm={{ inputs, load, onSubmit: createRoomHandler }} />;
 };
 
 export default Home;
