@@ -13,18 +13,13 @@ body{
 }
 
 @supports (-webkit-touch-callout: none) {
-    body{
+    body {
       height: -webkit-fill-available;
     }
     .base {
       /* Safari用のハック */
       height: -webkit-fill-available;
     }
-}
-
-.RoomContainer{
-    padding-bottom: '10px';
-    box-sizing: 'border-box';
 }
 
 @keyframes gradient {
@@ -96,4 +91,48 @@ body{
 100% {
     background-position: 0;
 }
+}
+
+.RoomContainer{
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+.movieWrap{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+    flex-grow: 1;
+}
+.movie{
+    flex-grow: 1;
+    padding-right: 24px;
+    box-sizing: border-box;
+}
+.chat{
+    width: 400px
+}
+
+@media screen and (max-width: 1300px) {
+    .movieWrap{
+        width: 95%;
+    }
+    .chat{
+        width: 366px;
+    }
+}
+
+@media screen and (max-width: 1124px) {
+    .movieWrap{
+        width: 96%;
+    }
+    .chat{
+        width: 100%;
+    }
+    .movie{
+        width: 100%;
+        padding-right: 0px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }  
 }

@@ -28,13 +28,12 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
       <Grid container justify="center">
-        {/* 最大化の場合は↓を変更 */}
         <Grid item xs={12}>
-          <Box style={{ padding: '0 0 10px 0' }}>
+          <Box>
             <Grid container>
-              <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
+              {/* <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
                 <PlayingBoard videoId={props.videoId} />
-              </Grid>
+              </Grid> */}
               <Grid style={{ background: 'black' }} item xs={12}>
                 <YouTube {...props.player} opts={props.opts} className="youtube_display" />
               </Grid>

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Box, Grid, Dialog } from '@material-ui/core';
+import { Box, Grid, Dialog, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
+import { PresenterDesk as Chat } from '../../components/Chat/PresenterDesk';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -22,18 +23,28 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
       {props.room.roomId && props.socket ? (
-        <Grid container justify="center" className="RoomContainer">
-          <Grid item xs={11} lg={9} xl={9}>
-            <Box>
+        <div className="RoomContainer">
+          <div className="movieWrap">
+            <div className="movie">
               <YoutubeWrap socket={props.socket} room={props.room} />
-            </Box>
-          </Grid>
-          <Grid item xs={11} lg={9} xl={9}>
-            <Box boxSizing="border-box" padding="10px 11px" borderRadius="2px" style={{ background: '#fff' }}>
+            </div>
+
+            <div className="chat">
+              <Chat />
+            </div>
+
+            <Box
+              width="100%"
+              boxSizing="border-box"
+              marginTop="15px"
+              padding="10px 11px"
+              borderRadius="2px"
+              style={{ background: '#fff' }}
+            >
               <AddForm socket={props.socket} />
             </Box>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       ) : (
         false
       )}
