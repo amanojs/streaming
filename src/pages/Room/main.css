@@ -97,3 +97,45 @@ body{
     background-position: 0;
 }
 }
+
+.RoomContainer{
+    
+}
+.movieWrap{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+    flex-grow: 1;
+}
+.movie{
+    flex-grow: 1;
+    padding-right: 24px;
+    box-sizing: border-box;
+}
+.chat{
+    width: 400px
+}
+
+@media screen and (max-width: 1300px) {
+    .movieWrap{
+        width: 95%;
+    }
+    .chat{
+        width: 366px;
+    }
+}
+
+@media screen and (max-width: 1124px) {
+    .movieWrap{
+        width: 96%;
+    }
+    .chat{
+        width: 100%;
+    }
+    .movie{
+        width: 100%;
+        padding-right: 0px;
+        box-sizing: border-box;
+    }  
+}
