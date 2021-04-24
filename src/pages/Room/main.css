@@ -13,18 +13,13 @@ body{
 }
 
 @supports (-webkit-touch-callout: none) {
-    body{
+    body {
       height: -webkit-fill-available;
     }
     .base {
       /* Safari用のハック */
       height: -webkit-fill-available;
     }
-}
-
-.RoomContainer{
-    padding-bottom: '10px';
-    box-sizing: 'border-box';
 }
 
 @keyframes gradient {
@@ -99,7 +94,8 @@ body{
 }
 
 .RoomContainer{
-    
+    padding-top: 20px;
+    box-sizing: border-box;
 }
 .movieWrap{
     display: flex;
@@ -136,6 +132,7 @@ body{
     .movie{
         width: 100%;
         padding-right: 0px;
+        margin-bottom: 15px;
         box-sizing: border-box;
     }  
 }

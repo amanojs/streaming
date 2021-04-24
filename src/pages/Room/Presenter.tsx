@@ -36,7 +36,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
             <Box
               width="100%"
               boxSizing="border-box"
-              marginTop="10px"
+              marginTop="15px"
               padding="10px 11px"
               borderRadius="2px"
               style={{ background: '#fff' }}
