@@ -1,4 +1,52 @@
 .chatBase {
+    position: relative;
     height: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 1px;
+    flex-grow: 1;
+}
+.chatWrap{
+    flex-direction: column;
+    display: flex;
+}
+.chatHeader{
+    width: 100%;
+    height: 45px;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    font-family: Noto Sans JP;
+    color: #555;
+    background: #fff;
+}
+.chatList{
+    flex-grow: 1;
+    background: #F9F9F9;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    transition: 0.5s;
+}
+.chats{
+    padding: 10px 15px 0 15px;
+}
+.commentUser{
+    color: #1DD1A1;
+    font-family: Noto Sans JP;
+    font-size: 14px;
+}
+.commentText{
+    color: #777;
+    font-family: Noto Sans JP;
+}
+.chatActions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #eee;
+    height: 70px;
     background: #fff;
 }

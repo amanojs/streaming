@@ -6,7 +6,7 @@ import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
-import { Presenter as Chat } from '../../components/Chat/Presenter';
+import { PresenterDesk as Chat } from '../../components/Chat/PresenterDesk';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
