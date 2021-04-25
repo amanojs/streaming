@@ -6,7 +6,7 @@ import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
-import { PresenterDesk as Chat } from '../../components/Chat/PresenterDesk';
+import { Chat } from '../../components/Chat/';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -30,7 +30,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
             </div>
 
             <div className="chat">
-              <Chat />
+              <Chat socket={props.socket} />
             </div>
 
             <Box
