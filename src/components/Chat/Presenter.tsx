@@ -7,6 +7,7 @@ import { ChatItem } from '.';
 interface PresenterProps {
   chatList: ChatItem[];
   chat: string;
+  userName: string;
   onInput: (msg: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   postChat: () => void;
@@ -45,7 +46,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         </div>
         <div className="chatActions">
           <form style={{ width: '100%' }}>
-            <Grid container justify="center" alignItems="center" spacing={1}>
+            <Grid container justify="center" alignItems="center" spacing={0}>
               <Grid item xs={9} sm={10} md={10} lg={9} xl={9}>
                 <TextField
                   multiline
@@ -56,7 +57,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   value={props.chat}
                   onKeyPress={(e) => props.onKeyDown(e)}
                   onChange={(e) => props.onInput(e.target.value)}
-                  placeholder="amanojsとしてチャットを送信"
+                  placeholder={props.userName + 'としてチャットを送信'}
                 />
               </Grid>
               <Grid item xs={1} md={1} lg={1} xl={1}>
@@ -64,6 +65,13 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   <Send fontSize="small" />
                 </IconButton>
               </Grid>
+              {props.smartphone ? (
+                false
+              ) : (
+                <Grid item xs={12}>
+                  <div className="assist_key">Ctrl + Enterで送信</div>
+                </Grid>
+              )}
             </Grid>
           </form>
         </div>
