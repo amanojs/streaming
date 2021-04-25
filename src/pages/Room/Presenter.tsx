@@ -29,20 +29,17 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
               <YoutubeWrap socket={props.socket} room={props.room} />
             </div>
 
-            <div className="chat">
+            <div className="chat_desk">
               <Chat socket={props.socket} />
             </div>
+          </div>
 
-            <Box
-              width="100%"
-              boxSizing="border-box"
-              marginTop="15px"
-              padding="10px 11px"
-              borderRadius="2px"
-              style={{ background: '#fff' }}
-            >
-              <AddForm socket={props.socket} />
-            </Box>
+          <div className="chat_mob">
+            <Chat socket={props.socket} smartphone={true} />
+          </div>
+
+          <div className="addForm">
+            <AddForm socket={props.socket} />
           </div>
         </div>
       ) : (
