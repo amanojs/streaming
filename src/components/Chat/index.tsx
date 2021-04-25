@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { State } from '../../store/store';
+import { Presenter } from './Presenter';
 
 interface ChatProps {
   socket: SocketIOClient.Socket;
+  smartphone?: boolean;
 }
 
-interface ChatItem {
+export interface ChatItem {
   name: string;
   id: string;
   msg: string;
@@ -15,6 +17,7 @@ interface ChatItem {
 export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
   const socket: SocketIOClient.Socket = props.socket;
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+  const [chat, setChat] = React.useState<string>('');
   const userName: string = useSelector((state: State) => state.room.userName);
 
   // マウント時の処理
@@ -32,19 +35,34 @@ export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     });
   };
 
+  const onInput = (msg: string) => {
+    setChat(msg);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.ctrlKey && e.code === 'Enter') {
+      postChat();
+    }
+  };
+
   /** チャット送信時の処理 */
-  const postChat = (msg: string) => {
-    socket.emit('post_chat', msg);
+  const postChat = () => {
+    const postData = chat.replace('\n', '');
+    console.log(postData);
+    if (postData !== '') {
+      socket.emit('post_chat', postData);
+      setChat('');
+    }
   };
 
   return (
-    <div>
-      <div>
-        {chatList.map((element, index) => {
-          return <div key={index}>{element.msg}</div>;
-        })}
-      </div>
-      <input type="button" onClick={() => postChat('testtest')} value="テスト" />
-    </div>
+    <Presenter
+      smartphone={props.smartphone}
+      chatList={chatList}
+      chat={chat}
+      onInput={onInput}
+      onKeyDown={onKeyDown}
+      postChat={postChat}
+    />
   );
 };
