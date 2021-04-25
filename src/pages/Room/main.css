@@ -97,37 +97,48 @@ body{
     padding-top: 20px;
     box-sizing: border-box;
 }
-.movieWrap{
+.movieWrap,.addForm,.chat_mob{
     display: flex;
-    flex-wrap: wrap;
     width: 90%;
     margin: 0 auto;
-    flex-grow: 1;
 }
 .movie{
     flex-grow: 1;
     padding-right: 24px;
     box-sizing: border-box;
 }
-.chat{
+.chat_desk{
     width: 400px
+}
+.chat_mob{
+    display: none;
+}
+.addForm{
+    box-sizing: border-box;
+    margin-top: 15px;
+    padding: 10px 11px;
+    border-radius: 2px;
+    background: #fff;
 }
 
 @media screen and (max-width: 1300px) {
-    .movieWrap{
+    .movieWrap,.addForm,.chat_mob{
         width: 95%;
     }
-    .chat{
+    .chat_desk{
         width: 366px;
     }
 }
 
-@media screen and (max-width: 1124px) {
+@media screen and (max-width: 900px) {
     .movieWrap{
         width: 96%;
     }
-    .chat{
-        width: 100%;
+    .chat_desk{
+        display: none;
+    }
+    .chat_mob{
+        display: block;
     }
     .movie{
         width: 100%;
