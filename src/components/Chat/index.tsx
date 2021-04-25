@@ -25,6 +25,12 @@ export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     setUpSocketListenner();
   }, []);
 
+  React.useEffect(() => {
+    const element = document.getElementsByClassName('chatList')[0];
+    const bottom = element.scrollHeight - element.clientHeight;
+    element.scroll(0, bottom);
+  }, [chatList]);
+
   /** socketのセットアップ */
   const setUpSocketListenner = (): void => {
     socket.on('new_chat', (chatItem: ChatItem) => {

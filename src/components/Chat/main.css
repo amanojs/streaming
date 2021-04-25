@@ -23,6 +23,9 @@
     color: #555;
     background: #fff;
 }
+.openButton{
+    display: none;
+}
 .chatList{
     flex-grow: 1;
     background: #F9F9F9;
@@ -31,7 +34,7 @@
     transition: 0.5s;
 }
 .chats{
-    padding: 10px 15px 0 15px;
+    padding: 10px 15px 10px 15px;
 }
 .commentUser{
     color: #1DD1A1;
