@@ -58,11 +58,11 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
       ) : (
         <div className="base">
           <div className="wave"></div>
+          <Dialog open={props.nameDialog}>
+            <CreateForm width="100%" head="ユーザーネーム" btn="入室" {...props.createForm} />
+          </Dialog>
         </div>
       )}
-      <Dialog open={props.nameDialog}>
-        <CreateForm width="100%" head="ユーザーネーム" btn="入室" {...props.createForm} />
-      </Dialog>
     </React.Fragment>
   );
 };
