@@ -9,7 +9,8 @@ import {
   DialogTitle,
   ListItemAvatar,
   Avatar,
-  Toolbar
+  Toolbar,
+  MenuItem
 } from '@material-ui/core';
 import { Close, Person } from '@material-ui/icons';
 import { User } from '../../store/modules/roomModule';
@@ -26,11 +27,18 @@ interface PresenterProps {
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   /** ヘッダ部分 */
   const userListHeader = (): JSX.Element => {
+    const toolbarPadding = props.isSmallScreen() ? 16 : 16;
     return (
-      <DialogTitle id="user_list_title">
-        <Toolbar>
-          <div style={{ flexGrow: 1 }}>User List({props.userList.length})</div>
-          <IconButton onClick={props.handleClose} color="secondary" aria-label="close UserList">
+      <DialogTitle style={{ padding: 0 }} id="user_list_title">
+        <Toolbar style={{ paddingRight: toolbarPadding, paddingLeft: toolbarPadding }}>
+          <div style={{ flexGrow: 1 }}>User List ({props.userList.length})</div>
+          <IconButton
+            size={props.isSmallScreen() ? 'medium' : 'small'}
+            style={{ marginLeft: 10 }}
+            onClick={props.handleClose}
+            color="secondary"
+            aria-label="close UserList"
+          >
             <Close />
           </IconButton>
         </Toolbar>
@@ -62,7 +70,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
     <React.Fragment>
       <IconButton size="small" color="secondary" onClick={props.handleClick}>
         <Person />
-        {props.userList.length}
+        <span style={{ marginRight: 4, marginTop: 1 }}>{props.userList.length}</span>
       </IconButton>
       <Menu
         id="user_list_menu"

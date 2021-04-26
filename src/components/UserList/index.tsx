@@ -9,14 +9,6 @@ export const UserList: React.FC = () => {
   const [width, setWidth] = React.useState<number>(window.innerWidth);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  // const userListMock = (): User[] => {
-  //   const list: User[] = [];
-  //   for (let i = 0; i < 100; i++) {
-  //     list.push({ id: `id${i}`, name: `user${i}` });
-  //   }
-  //   return list;
-  // };
-
   /** 画面幅を取得 */
   const updateWidth = () => {
     setWidth(window.innerWidth);

@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Box, Grid, Dialog } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
-import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
+import { CreateForm, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
-import { UserList } from '../../components/UserList';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -26,7 +24,6 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <Grid container justify="center" className="RoomContainer">
           <Grid item xs={11} lg={9} xl={9}>
             <Box>
-              <UserList />
               <YoutubeWrap socket={props.socket} room={props.room} />
             </Box>
           </Grid>
