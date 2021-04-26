@@ -56,7 +56,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
           history.push('/');
         }
       } else {
-        dispach(appModule.actions.setHeader(true));
+        dispatch(appModule.actions.setHeader(true));
       }
     });
     return () => {
@@ -85,8 +85,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
     if (!socket) return sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
-    
     socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: JoinRoomRes) => {
+      console.log(res);
       if (res.result) {
         dispatch(
           roomModule.actions.setRoom({
@@ -96,7 +96,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
             userList: res.userList || []
           })
         );
-        dispach(appModule.actions.setHeader(true));
+        dispatch(appModule.actions.setHeader(true));
         setNameDialog(false);
       } else {
         sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });

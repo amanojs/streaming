@@ -59,6 +59,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   color="secondary"
                   variant="standard"
                   size="small"
+                  className="chatInput"
                   value={props.chat}
                   onKeyPress={(e) => props.onKeyDown(e)}
                   onChange={(e) => props.onInput(e.target.value)}
