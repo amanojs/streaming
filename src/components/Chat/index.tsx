@@ -20,6 +20,8 @@ export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
   const socket: SocketIOClient.Socket = props.socket;
   const [chat, setChat] = React.useState<string>('');
   const userName: string = useSelector((state: State) => state.room.userName);
+  const maxNameLength = 6;
+  const userNameSlice = userName.length <= maxNameLength ? userName : userName.slice(0, maxNameLength) + '..';
 
   React.useEffect(() => {
     const elements = document.getElementsByClassName('chatList');
@@ -54,7 +56,7 @@ export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
       smartphone={props.smartphone}
       chatList={props.chatList}
       chat={chat}
-      userName={userName}
+      userName={userNameSlice}
       onInput={onInput}
       onKeyDown={onKeyDown}
       postChat={postChat}
