@@ -2,14 +2,19 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { VariantType, useSnackbar } from 'notistack';
-import roomModule from '../../store/modules/roomModule';
 import appModule from '../../store/modules/appModule';
+import roomModule, { User } from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
 import Cookie from 'js-cookie';
 import { ChatItem } from '../../components/Chat';
+
+interface JoinRoomRes {
+  result: boolean;
+  userList?: User[];
+}
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(null);
@@ -19,7 +24,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
-  const dispach = useDispatch();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
@@ -62,9 +67,12 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   React.useEffect(() => {
     if (!socket) return;
     socket.on('user_joined', (res: { user: { id: string; name: string } }) => {
+      // console.log(res);
+      dispatch(roomModule.actions.addUser(res.user));
       sendNotifiction(res.user.name + 'が入室しました', 'success');
     });
     socket.on('user_left', (res: { user: { id: string; name: string } }) => {
+      dispatch(roomModule.actions.removeUser(res.user.id));
       sendNotifiction(res.user.name + 'が退出しました', 'error');
     });
     socket.on('new_chat', (chatItem: ChatItem) => {
@@ -77,9 +85,17 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
     if (!socket) return sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
-    socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
-      if (res) {
-        dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
+    
+    socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: JoinRoomRes) => {
+      if (res.result) {
+        dispatch(
+          roomModule.actions.setRoom({
+            roomId: option.roomId,
+            userName: userName.value,
+            isOwner: false,
+            userList: res.userList || []
+          })
+        );
         dispach(appModule.actions.setHeader(true));
         setNameDialog(false);
       } else {

@@ -3,6 +3,7 @@ import { Grid, TextField, IconButton } from '@material-ui/core';
 import './main.css';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined, Forum, Send } from '@material-ui/icons';
 import { ChatItem } from '.';
+import { UserList } from '../UserList';
 
 interface PresenterProps {
   chatList: ChatItem[];
@@ -29,6 +30,9 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           ) : (
             false
           )}
+          <div className="userlistBase">
+            <UserList />
+          </div>
         </div>
         <div className="chatList" style={{ height: isOpen ? '200px' : '0' }}>
           {props.chatList.map((chat, index) => {
@@ -52,6 +56,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   multiline
                   fullWidth
                   rowsMax={2}
+                  color="secondary"
                   variant="standard"
                   size="small"
                   value={props.chat}
