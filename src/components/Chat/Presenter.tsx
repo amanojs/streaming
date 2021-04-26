@@ -56,6 +56,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                   multiline
                   fullWidth
                   rowsMax={2}
+                  color="secondary"
                   variant="standard"
                   size="small"
                   value={props.chat}
