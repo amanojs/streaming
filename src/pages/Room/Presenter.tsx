@@ -6,6 +6,7 @@ import './main.css';
 import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
+import { UserList } from '../../components/UserList';
 import { Chat, ChatItem } from '../../components/Chat/';
 
 interface PresenterProps {
