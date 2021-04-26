@@ -8,6 +8,7 @@ import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
 import Cookie from 'js-cookie';
+import { ChatItem } from '../../components/Chat';
 
 interface JoinRoomRes {
   result: boolean;
@@ -19,6 +20,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [nameDialog, setNameDialog] = React.useState<boolean>(false);
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
+  const [chatList, setChatList] = React.useState<ChatItem[]>([]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -69,6 +71,12 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     socket.on('user_left', (res: { user: { id: string; name: string } }) => {
       dispatch(roomModule.actions.removeUser(res.user.id));
       sendNotifiction(res.user.name + 'が退出しました', 'error');
+    });
+    socket.on('new_chat', (chatItem: ChatItem) => {
+      setChatList((prev) => {
+        const newArray = [...prev, chatItem];
+        return newArray;
+      });
     });
   }, [socket]);
 
@@ -161,6 +169,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       room={room}
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
+      chat={{ chatList, setChatList }}
     />
   );
 };

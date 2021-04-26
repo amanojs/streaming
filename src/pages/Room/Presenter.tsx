@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Grid, Dialog } from '@material-ui/core';
+import { Box, Grid, Dialog, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { YoutubeWrap } from '../../components/YoutubeWrap';
 import './main.css';
@@ -7,6 +7,7 @@ import { CreateForm, CreateFormProps, InputSub } from '../../components/CreateFo
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
 import { UserList } from '../../components/UserList';
+import { Chat, ChatItem } from '../../components/Chat/';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -17,25 +18,40 @@ interface PresenterProps {
     load: boolean;
     onSubmit: () => void;
   };
+  chat: {
+    chatList: ChatItem[];
+    setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
+  };
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
       {props.room.roomId && props.socket ? (
-        <Grid container justify="center" className="RoomContainer">
-          <Grid item xs={11} lg={9} xl={9}>
-            <Box>
-              <UserList />
+        <div className="RoomContainer">
+          <div className="movieWrap">
+            <div className="movie">
               <YoutubeWrap socket={props.socket} room={props.room} />
-            </Box>
-          </Grid>
-          <Grid item xs={11} lg={9} xl={9}>
-            <Box boxSizing="border-box" padding="10px 11px" borderRadius="2px" style={{ background: '#fff' }}>
-              <AddForm socket={props.socket} />
-            </Box>
-          </Grid>
-        </Grid>
+            </div>
+
+            <div className="chat_desk">
+              <Chat socket={props.socket} chatList={props.chat.chatList} setChatList={props.chat.setChatList} />
+            </div>
+          </div>
+
+          <div className="chat_mob">
+            <Chat
+              socket={props.socket}
+              chatList={props.chat.chatList}
+              setChatList={props.chat.setChatList}
+              smartphone={true}
+            />
+          </div>
+
+          <div className="addForm">
+            <AddForm socket={props.socket} />
+          </div>
+        </div>
       ) : (
         false
       )}
