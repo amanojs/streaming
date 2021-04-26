@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { VariantType, useSnackbar } from 'notistack';
 import roomModule from '../../store/modules/roomModule';
+import appModule from '../../store/modules/appModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
@@ -49,6 +50,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
           sendNotifiction('ルームが存在しませんでした', 'error', { horizontal: 'center', vertical: 'top' });
           history.push('/');
         }
+      } else {
+        dispach(appModule.actions.setHeader(true));
       }
     });
     return () => {
@@ -77,6 +80,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
       if (res) {
         dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
+        dispach(appModule.actions.setHeader(true));
         setNameDialog(false);
       } else {
         sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
