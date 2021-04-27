@@ -4,6 +4,7 @@ import { ArrowDropDownOutlined, ArrowDropUpOutlined, Forum, PlaylistPlay } from 
 import { UserList } from '../UserList';
 import { Chat, ChatItem } from '../Chat';
 import './main.css';
+import { PlayList } from '../PlayList';
 
 interface TabWrapProps {
   socket: SocketIOClient.Socket;
@@ -58,10 +59,11 @@ export const TabWrap: React.FC<TabWrapProps> = (props: TabWrapProps) => {
         </div>
         {/* ここにコンポーネントを入れる */}
         {tabIndex === 0 ? (
-          <Chat socket={props.socket} isOpen={isOpen} {...props.chat} smartphone={props.smartphone} />
+          <Chat socket={props.socket} isOpen={isOpen} {...chat} smartphone={props.smartphone} />
         ) : (
           false
         )}
+        {tabIndex === 1 ? <PlayList socket={props.socket} isOpen={isOpen} smartphone={props.smartphone} /> : false}
       </Grid>
     </Grid>
   );

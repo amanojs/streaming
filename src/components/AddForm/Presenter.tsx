@@ -31,7 +31,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
             style={{ height: '100%' }}
             disableElevation
           >
-            変更
+            ADD
           </Button>
         </Grid>
       </Grid>

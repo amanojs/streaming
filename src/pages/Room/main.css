@@ -106,9 +106,9 @@ body{
     flex-grow: 1;
 }
 .chat_desk{
-    width: 400px;
+    width: 450px;
     min-width: 360px;
-    padding-left: 10px;
+    padding-left: 20px;
     box-sizing: border-box;
 }
 .chat_mob{
@@ -127,7 +127,7 @@ body{
         width: 95%;
     }
     .chat_desk{
-        width: 360px;
+        width: 400px;
     }
 }
 
