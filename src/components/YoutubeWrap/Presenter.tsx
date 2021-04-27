@@ -4,7 +4,6 @@ import { YouTubePlayer } from 'youtube-player/dist/types';
 import { YoutubeController } from '../YoutubeController';
 import { Box, Grid } from '@material-ui/core';
 import './main.css';
-import { PlayingBoard } from '../PlayingBoard';
 
 export interface PresenterProps {
   player: YouTubeProps;
@@ -31,11 +30,10 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <Grid item xs={12}>
           <Box>
             <Grid container>
-              {/* <Grid item xs={12} sm={6} md={4} lg={5} xl={4}>
-                <PlayingBoard videoId={props.videoId} />
-              </Grid> */}
-              <Grid style={{ background: 'black' }} item xs={12}>
-                <YouTube {...props.player} opts={props.opts} className="youtube_display" />
+              <Grid item xs={12}>
+                <div style={{ background: 'black' }}>
+                  <YouTube {...props.player} opts={props.opts} className="youtube_display" />
+                </div>
               </Grid>
               <Grid item style={{ background: '#000' }} xs={12}>
                 <YoutubeController {...props.controller} />
