@@ -131,7 +131,7 @@ body{
 }
 
 @media screen and (max-width: 900px) {
-    .movieWrap{
+    .movieWrap,.addForm,.chat_mob{
         width: 96%;
     }
     .chat_desk{
