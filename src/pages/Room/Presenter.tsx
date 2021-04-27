@@ -39,12 +39,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           </div>
 
           <div className="chat_mob">
-            <Chat
-              socket={props.socket}
-              chatList={props.chat.chatList}
-              setChatList={props.chat.setChatList}
-              smartphone={true}
-            />
+            <TabWrap socket={props.socket} chat={{ ...props.chat }} smartphone={true} />
           </div>
 
           <div className="addForm">

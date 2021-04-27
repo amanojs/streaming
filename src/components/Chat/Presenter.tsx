@@ -11,13 +11,14 @@ interface PresenterProps {
   onInput: (msg: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   postChat: () => void;
+  isOpen: boolean;
   smartphone?: boolean;
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   return (
     <React.Fragment>
-      <div className="chatList">
+      <div className="chatList" style={{ height: props.isOpen ? '200px' : '0px' }}>
         {props.chatList.map((chat, index) => {
           return (
             <Grid container className="chats" key={index}>
