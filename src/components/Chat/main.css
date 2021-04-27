@@ -1,11 +1,9 @@
 .chatBase {
-    position: relative;
     height: 100%;
     box-sizing: border-box;
     background: #fff;
     border: 1px solid #eee;
     border-radius: 1px;
-    flex-grow: 1;
 }
 .chatWrap{
     flex-direction: column;
