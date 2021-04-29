@@ -9,8 +9,8 @@ interface PlayListProps {
 }
 
 export interface PlayListItem {
-  index: number;
   videoId: string;
+  thumbnail: string;
   title: string;
   requester: string;
 }

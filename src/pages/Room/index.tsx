@@ -23,7 +23,26 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
-  const [playList, setPlayList] = React.useState<PlayListItem[]>([]);
+  const [playList, setPlayList] = React.useState<PlayListItem[]>([
+    {
+      videoId: '6LgFJZgbPFE',
+      thumbnail: 'http://img.youtube.com/vi/6LgFJZgbPFE/mqdefault.jpg',
+      title: '『１面のボス〈一輪車ボーイ〉って奴』ジャルジャルのネタのタネ【JARUJARUTOWER】',
+      requester: 'eiyuu'
+    },
+    {
+      videoId: '5fooxt19UvA',
+      thumbnail: 'http://img.youtube.com/vi/5fooxt19UvA/mqdefault.jpg',
+      title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
+      requester: 'amanojs'
+    },
+    {
+      videoId: 'SLCat_OT7FM',
+      thumbnail: 'http://img.youtube.com/vi/SLCat_OT7FM/mqdefault.jpg',
+      title: 'GWスタート記念豚牛貝ソロバーベキューをキメるだけの動画',
+      requester: 'kenji'
+    }
+  ]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispatch = useDispatch();
