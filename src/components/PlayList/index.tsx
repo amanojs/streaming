@@ -16,5 +16,7 @@ export interface PlayListItem {
 }
 
 export const PlayList: React.FC<PlayListProps> = (props: PlayListProps) => {
-  return <Presenter socket={props.socket} isOpen={props.isOpen} smartphone={props.smartphone} />;
+  return (
+    <Presenter socket={props.socket} playList={props.playList} isOpen={props.isOpen} smartphone={props.smartphone} />
+  );
 };

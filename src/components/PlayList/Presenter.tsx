@@ -2,9 +2,11 @@ import * as React from 'react';
 import { Grid, IconButton } from '@material-ui/core';
 import './main.css';
 import { DonutSmall } from '@material-ui/icons';
+import { PlayListItem } from '.';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket;
+  playList: PlayListItem[];
   isOpen: boolean;
   smartphone?: boolean;
 }
@@ -85,7 +87,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           </Grid>
         </Grid>
 
-        {[0, 0, 0, 0, 0, 0, 0, 0].map((val, index) => {
+        {props.playList.map((val, index) => {
           return (
             <Grid
               container
