@@ -28,7 +28,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   const userListHeader = (): JSX.Element => {
     return (
       <Box display="flex" alignItems="center" style={{ padding: '10px 10px 10px 30px' }}>
-        <div style={{ flexGrow: 1, fontFamily: 'Noto Suns JP', color: '#222' }}>Users({props.userList.length})</div>
+        <div style={{ flexGrow: 1, fontFamily: 'Noto Sans JP', color: '#222' }}>Users({props.userList.length})</div>
         <IconButton onClick={props.handleClose} color="secondary" size="small" aria-label="close UserList">
           <Close />
         </IconButton>

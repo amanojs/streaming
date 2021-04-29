@@ -104,11 +104,12 @@ body{
 }
 .movie{
     flex-grow: 1;
-    padding-right: 24px;
-    box-sizing: border-box;
 }
 .chat_desk{
-    width: 400px
+    width: 450px;
+    min-width: 360px;
+    padding-left: 20px;
+    box-sizing: border-box;
 }
 .chat_mob{
     display: none;
@@ -122,11 +123,11 @@ body{
 }
 
 @media screen and (max-width: 1300px) {
-    .movieWrap,.addForm,.chat_mob{
+    .movieWrap,.addForm{
         width: 95%;
     }
     .chat_desk{
-        width: 366px;
+        width: 400px;
     }
 }
 

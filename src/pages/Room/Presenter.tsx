@@ -6,6 +6,8 @@ import { CreateForm, InputSub } from '../../components/CreateForm';
 import { AddForm } from '../../components/AddForm';
 import { RoomState } from '../../store/modules/roomModule';
 import { Chat, ChatItem } from '../../components/Chat/';
+import { TabWrap } from '../../components/TabWrap';
+import { PlayListItem } from '../../components/PlayList';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
@@ -20,6 +22,9 @@ interface PresenterProps {
     chatList: ChatItem[];
     setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
   };
+  playList: {
+    playList: PlayListItem[];
+  };
 }
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
@@ -33,15 +38,15 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
             </div>
 
             <div className="chat_desk">
-              <Chat socket={props.socket} chatList={props.chat.chatList} setChatList={props.chat.setChatList} />
+              <TabWrap socket={props.socket} chat={{ ...props.chat }} playList={{ ...props.playList }} />
             </div>
           </div>
 
           <div className="chat_mob">
-            <Chat
+            <TabWrap
               socket={props.socket}
-              chatList={props.chat.chatList}
-              setChatList={props.chat.setChatList}
+              chat={{ ...props.chat }}
+              playList={{ ...props.playList }}
               smartphone={true}
             />
           </div>

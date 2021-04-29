@@ -1,0 +1,35 @@
+.tabBase {
+    height: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 1px;
+}
+.tabWrap{
+    flex-direction: column;
+    display: flex;
+}
+.tabHeader{
+    width: 100%;
+    height: 45px;
+    padding: 0 5px 0 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    font-family: Noto Sans JP;
+    color: #555;
+    background: #fff;
+}
+.tabMenuButton {
+    padding: 0 40px;
+    height: 100%;
+}
+.openButton{
+    display: none;
+}
+.userlistBase{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}

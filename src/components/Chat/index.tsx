@@ -8,6 +8,7 @@ interface ChatProps {
   chatList: ChatItem[];
   setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
   smartphone?: boolean;
+  isOpen: boolean;
 }
 
 export interface ChatItem {
@@ -53,13 +54,14 @@ export const Chat: React.FC<ChatProps> = (props: ChatProps) => {
 
   return (
     <Presenter
-      smartphone={props.smartphone}
       chatList={props.chatList}
       chat={chat}
       userName={userNameSlice}
       onInput={onInput}
       onKeyDown={onKeyDown}
       postChat={postChat}
+      isOpen={props.isOpen}
+      smartphone={props.smartphone}
     />
   );
 };

@@ -1,36 +1,3 @@
-.chatBase {
-    position: relative;
-    height: 100%;
-    box-sizing: border-box;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 1px;
-    flex-grow: 1;
-}
-.chatWrap{
-    flex-direction: column;
-    display: flex;
-}
-.chatHeader{
-    width: 100%;
-    height: 45px;
-    padding: 0 5px 0 15px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    box-sizing: border-box;
-    font-family: Noto Sans JP;
-    color: #555;
-    background: #fff;
-}
-.openButton{
-    display: none;
-}
-.userlistBase{
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-}
 .chatList{
     flex-grow: 1;
     background: #F9F9F9;
