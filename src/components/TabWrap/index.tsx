@@ -4,13 +4,16 @@ import { ArrowDropDownOutlined, ArrowDropUpOutlined, Forum, PlaylistPlay } from 
 import { UserList } from '../UserList';
 import { Chat, ChatItem } from '../Chat';
 import './main.css';
-import { PlayList } from '../PlayList';
+import { PlayList, PlayListItem } from '../PlayList';
 
 interface TabWrapProps {
   socket: SocketIOClient.Socket;
   chat: {
     chatList: ChatItem[];
     setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
+  };
+  playList: {
+    playList: PlayListItem[];
   };
   smartphone?: boolean;
 }
@@ -19,6 +22,7 @@ export const TabWrap: React.FC<TabWrapProps> = (props: TabWrapProps) => {
   const [tabIndex, setTabIndex] = React.useState<number>(0);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const chat = props.chat;
+  const playList = props.playList;
 
   const setTabIndexHandler = (index: number): void => {
     if (tabIndex === index) return;
@@ -63,7 +67,11 @@ export const TabWrap: React.FC<TabWrapProps> = (props: TabWrapProps) => {
         ) : (
           false
         )}
-        {tabIndex === 1 ? <PlayList socket={props.socket} isOpen={isOpen} smartphone={props.smartphone} /> : false}
+        {tabIndex === 1 ? (
+          <PlayList socket={props.socket} {...playList} isOpen={isOpen} smartphone={props.smartphone} />
+        ) : (
+          false
+        )}
       </Grid>
     </Grid>
   );

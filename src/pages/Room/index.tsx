@@ -10,6 +10,7 @@ import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
 import Cookie from 'js-cookie';
 import { ChatItem } from '../../components/Chat';
+import { PlayListItem } from '../../components/PlayList';
 
 interface JoinRoomRes {
   result: boolean;
@@ -22,6 +23,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+  const [playList, setPlayList] = React.useState<PlayListItem[]>([]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -175,6 +177,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
       chat={{ chatList, setChatList }}
+      playList={{ playList }}
     />
   );
 };
