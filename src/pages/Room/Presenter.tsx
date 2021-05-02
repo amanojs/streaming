@@ -34,7 +34,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <div className="RoomContainer">
           <div className="movieWrap">
             <div className="movie">
-              <YoutubeWrap socket={props.socket} room={props.room} />
+              <YoutubeWrap socket={props.socket} room={props.room} playList={props.playList.playList} />
             </div>
 
             <div className="chat_desk">
