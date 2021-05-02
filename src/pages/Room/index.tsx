@@ -25,9 +25,9 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
   const [playList, setPlayList] = React.useState<PlayListItem[]>([
     {
-      videoId: '6LgFJZgbPFE',
-      thumbnail: 'http://img.youtube.com/vi/6LgFJZgbPFE/mqdefault.jpg',
-      title: '『１面のボス〈一輪車ボーイ〉って奴』ジャルジャルのネタのタネ【JARUJARUTOWER】',
+      videoId: 'qOqPBTU6s6g',
+      thumbnail: 'http://img.youtube.com/vi/qOqPBTU6s6g/mqdefault.jpg',
+      title: 'リモート面接中にヒゲ剃る奴',
       requester: 'eiyuu'
     },
     {

@@ -47,6 +47,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   socket = this.props.socket;
+  playList = this.props.playList;
 
   defaultOpts = (isSmartPhone: boolean): YouTubeProps['opts'] => ({
     width: '100%',
@@ -223,7 +224,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          this.changeVideo(target, 'ZCY5JS-nuz0');
+          this.changeVideo(target, this.playList[0].videoId);
         } else {
           this.socket.emit('youtube_sync');
         }
@@ -273,7 +274,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    this.changeVideo(target, 'ZCY5JS-nuz0');
+                    this.changeVideo(target, this.playList[0].videoId);
                   }
                 } else {
                   this.socket.emit('youtube_sync');
