@@ -11,7 +11,7 @@ import { PlayListItem } from '../PlayList';
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
   room: RoomState;
-  playList: PlayListItem[];
+  nowPlaying: PlayListItem;
 }
 
 interface YoutubeWrapState {
@@ -47,7 +47,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   socket = this.props.socket;
-  playList = this.props.playList;
+  nowPlaying = this.props.nowPlaying;
 
   defaultOpts = (isSmartPhone: boolean): YouTubeProps['opts'] => ({
     width: '100%',
@@ -224,7 +224,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          this.changeVideo(target, this.playList[0].videoId);
+          this.changeVideo(target, this.nowPlaying.videoId);
         } else {
           this.socket.emit('youtube_sync');
         }
@@ -274,7 +274,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    this.changeVideo(target, this.playList[0].videoId);
+                    this.changeVideo(target, this.nowPlaying.videoId);
                   }
                 } else {
                   this.socket.emit('youtube_sync');
@@ -288,8 +288,14 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
       this.setState({ videoStatus: data });
-    }
+    },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
+    onEnd: ({ target }) => {
+      if (this.props.room.isOwner) {
+        // 動画が終了したことをサーバーに通知
+        // this.socket.emit();
+      }
+    }
   };
 
   /** 動画を変更して setUpBuffer を呼び出す関数 */

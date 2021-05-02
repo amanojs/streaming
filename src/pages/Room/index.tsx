@@ -23,6 +23,12 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+  const [nowPlaying, setNowPlaying] = React.useState<PlayListItem>({
+    videoId: '5fooxt19UvA',
+    thumbnail: 'http://img.youtube.com/vi/5fooxt19UvA/mqdefault.jpg',
+    title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
+    requester: 'amanojs'
+  });
   const [playList, setPlayList] = React.useState<PlayListItem[]>([
     {
       videoId: 'qOqPBTU6s6g',
@@ -196,7 +202,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
       chat={{ chatList, setChatList }}
-      playList={{ playList }}
+      playList={{ nowPlaying, playList }}
     />
   );
 };

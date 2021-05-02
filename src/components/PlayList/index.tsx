@@ -3,6 +3,7 @@ import { Presenter } from './Presenter';
 
 interface PlayListProps {
   socket: SocketIOClient.Socket;
+  nowPlaying: PlayListItem;
   playList: PlayListItem[];
   isOpen: boolean;
   smartphone?: boolean;
@@ -17,6 +18,12 @@ export interface PlayListItem {
 
 export const PlayList: React.FC<PlayListProps> = (props: PlayListProps) => {
   return (
-    <Presenter socket={props.socket} playList={props.playList} isOpen={props.isOpen} smartphone={props.smartphone} />
+    <Presenter
+      socket={props.socket}
+      nowPlaying={props.nowPlaying}
+      playList={props.playList}
+      isOpen={props.isOpen}
+      smartphone={props.smartphone}
+    />
   );
 };

@@ -13,6 +13,7 @@ interface TabWrapProps {
     setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
   };
   playList: {
+    nowPlaying: PlayListItem;
     playList: PlayListItem[];
   };
   smartphone?: boolean;

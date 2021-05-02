@@ -6,6 +6,7 @@ import { PlayListItem } from '.';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket;
+  nowPlaying: PlayListItem;
   playList: PlayListItem[];
   isOpen: boolean;
   smartphone?: boolean;
@@ -13,7 +14,7 @@ interface PresenterProps {
 
 export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   const playList = props.playList;
-  const nowPlaying = playList[0];
+  const nowPlaying = props.nowPlaying;
   return (
     <React.Fragment>
       <div className="movieDetail">
@@ -45,7 +46,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
       </div>
       <div className="movieList" style={{ height: props.isOpen ? '200px' : '0px' }}>
         {props.playList.map((movie, index) => {
-          return index !== 0 ? (
+          return (
             <Grid
               container
               className="movies"
@@ -66,7 +67,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                     background: 'rgba(0,0,0,0.3)'
                   }}
                 >
-                  {index}
+                  {index + 1}
                 </div>
                 <img
                   src={movie.thumbnail}
@@ -91,8 +92,6 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                 <p style={{ margin: '0px', fontSize: '14px', color: '#8f8f8f' }}>{movie.requester} がリクエスト</p>
               </Grid>
             </Grid>
-          ) : (
-            false
           );
         })}
       </div>
