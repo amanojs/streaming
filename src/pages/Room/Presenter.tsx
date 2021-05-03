@@ -23,6 +23,7 @@ interface PresenterProps {
     setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>;
   };
   playList: {
+    nowPlaying: PlayListItem;
     playList: PlayListItem[];
   };
 }
@@ -34,7 +35,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <div className="RoomContainer">
           <div className="movieWrap">
             <div className="movie">
-              <YoutubeWrap socket={props.socket} room={props.room} />
+              <YoutubeWrap socket={props.socket} room={props.room} nowPlaying={props.playList.nowPlaying} />
             </div>
 
             <div className="chat_desk">

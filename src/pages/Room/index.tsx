@@ -23,11 +23,17 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+  const [nowPlaying, setNowPlaying] = React.useState<PlayListItem>({
+    videoId: '5fooxt19UvA',
+    thumbnail: 'http://img.youtube.com/vi/5fooxt19UvA/mqdefault.jpg',
+    title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
+    requester: 'amanojs'
+  });
   const [playList, setPlayList] = React.useState<PlayListItem[]>([
     {
-      videoId: '6LgFJZgbPFE',
-      thumbnail: 'http://img.youtube.com/vi/6LgFJZgbPFE/mqdefault.jpg',
-      title: '『１面のボス〈一輪車ボーイ〉って奴』ジャルジャルのネタのタネ【JARUJARUTOWER】',
+      videoId: 'qOqPBTU6s6g',
+      thumbnail: 'http://img.youtube.com/vi/qOqPBTU6s6g/mqdefault.jpg',
+      title: 'リモート面接中にヒゲ剃る奴',
       requester: 'eiyuu'
     },
     {
@@ -196,7 +202,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
       chat={{ chatList, setChatList }}
-      playList={{ playList }}
+      playList={{ nowPlaying, playList }}
     />
   );
 };

@@ -6,10 +6,12 @@ import { Presenter } from './Presenter';
 import { YouTubeProps } from 'react-youtube';
 import { RoomState } from '../../store/modules/roomModule';
 import Cookie from 'js-cookie';
+import { PlayListItem } from '../PlayList';
 
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
   room: RoomState;
+  nowPlaying: PlayListItem;
 }
 
 interface YoutubeWrapState {
@@ -45,6 +47,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   socket = this.props.socket;
+  nowPlaying = this.props.nowPlaying;
 
   defaultOpts = (isSmartPhone: boolean): YouTubeProps['opts'] => ({
     width: '100%',
@@ -221,13 +224,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          target.cueVideoById('ZCY5JS-nuz0');
-          this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
-            this.setUpBuffer(target).then(() => {
-              // console.log('Buffer完了');
-              this.setState({ isFirst: false });
-            });
-          });
+          this.changeVideo(target, this.nowPlaying.videoId);
         } else {
           this.socket.emit('youtube_sync');
         }
@@ -277,13 +274,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    target.cueVideoById('ZCY5JS-nuz0');
-                    this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
-                      this.setUpBuffer(target).then(() => {
-                        // console.log('Buffer完了');
-                        this.setState({ isFirst: false });
-                      });
-                    });
+                    this.changeVideo(target, this.nowPlaying.videoId);
                   }
                 } else {
                   this.socket.emit('youtube_sync');
@@ -297,8 +288,25 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
       this.setState({ videoStatus: data });
-    }
+    },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
+    onEnd: ({ target }) => {
+      if (this.props.room.isOwner) {
+        // 動画が終了したことをサーバーに通知
+        // this.socket.emit();
+      }
+    }
+  };
+
+  /** 動画を変更して setUpBuffer を呼び出す関数 */
+  changeVideo = (target: YouTubePlayer, videoId: string): void => {
+    target.cueVideoById(videoId);
+    this.setState({ videoId }, () => {
+      this.setUpBuffer(target).then(() => {
+        // console.log('Buffer完了');
+        this.setState({ isFirst: false });
+      });
+    });
   };
 
   /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
