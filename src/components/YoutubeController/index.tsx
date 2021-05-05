@@ -57,6 +57,9 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   React.useEffect(() => {
     window.onkeypress = null;
     window.onkeypress = shortcut;
+    return () => {
+      window.onkeypress = null;
+    };
   }, [statusIcon, timed]);
 
   const shortcut = function (e: KeyboardEvent): void {
