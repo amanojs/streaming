@@ -57,13 +57,22 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   React.useEffect(() => {
     window.onkeypress = null;
     window.onkeypress = shortcut;
-  }, [statusIcon]);
+  }, [statusIcon, timed]);
 
   const shortcut = function (e: KeyboardEvent): void {
     console.log(e.key);
     switch (e.key) {
       case ' ':
         playOrPause();
+        break;
+      case 'k':
+        playOrPause();
+        break;
+      case 'l':
+        fastTimed(15);
+        break;
+      case 'j':
+        fastTimed(-15);
         break;
     }
   };
@@ -89,6 +98,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
           props.youtubeDisp?.playVideo();
         }, 200);
       }
+      setTimed(targetTime);
       props.youtubeDisp.seekTo(targetTime, true);
       props.socket.emit('youtube_seek', targetTime);
     }
