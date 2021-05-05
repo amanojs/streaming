@@ -49,9 +49,6 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
       setDuration(duration);
     }
     statusCheck(props.videoStatus);
-    /* return () => {
-      window.removeEventListener('keypress', shortcut);
-    }; */
   }, [props.videoStatus]);
 
   React.useEffect(() => {
@@ -63,7 +60,6 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   }, [statusIcon, timed]);
 
   const shortcut = function (e: KeyboardEvent): void {
-    console.log(e.key);
     switch (e.key) {
       case ' ':
         playOrPause();
@@ -153,10 +149,8 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   /** 再生、停止ボタンクリック処理 */
   const playOrPause = () => {
     if (statusIcon === 'play') {
-      console.log('playします');
       props.youtubeDisp?.playVideo();
     } else {
-      console.log('pauseします');
       props.youtubeDisp?.pauseVideo();
     }
   };
