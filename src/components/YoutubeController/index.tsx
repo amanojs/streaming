@@ -49,7 +49,36 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
       setDuration(duration);
     }
     statusCheck(props.videoStatus);
+    /* return () => {
+      window.removeEventListener('keypress', shortcut);
+    }; */
   }, [props.videoStatus]);
+
+  React.useEffect(() => {
+    window.onkeypress = null;
+    window.onkeypress = shortcut;
+    return () => {
+      window.onkeypress = null;
+    };
+  }, [statusIcon, timed]);
+
+  const shortcut = function (e: KeyboardEvent): void {
+    console.log(e.key);
+    switch (e.key) {
+      case ' ':
+        playOrPause();
+        break;
+      case 'k':
+        playOrPause();
+        break;
+      case 'l':
+        fastTimed(15);
+        break;
+      case 'j':
+        fastTimed(-15);
+        break;
+    }
+  };
 
   /** 再生バー処理 */
   const sliderOnChange = (changedtime: MouseEvent, value: number | number[]) => {
@@ -72,6 +101,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
           props.youtubeDisp?.playVideo();
         }, 200);
       }
+      setTimed(targetTime);
       props.youtubeDisp.seekTo(targetTime, true);
       props.socket.emit('youtube_seek', targetTime);
     }
@@ -123,8 +153,10 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
   /** 再生、停止ボタンクリック処理 */
   const playOrPause = () => {
     if (statusIcon === 'play') {
+      console.log('playします');
       props.youtubeDisp?.playVideo();
     } else {
+      console.log('pauseします');
       props.youtubeDisp?.pauseVideo();
     }
   };
