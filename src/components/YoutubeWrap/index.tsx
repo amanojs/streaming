@@ -121,10 +121,13 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.socket.on('request_playing_data', async (participant_id: string) => {
       if (!this.state.youtubeDisp) return;
       const status = this.state.youtubeDisp.getPlayerState();
-      const time = this.state.youtubeDisp.getCurrentTime();
+      let time = this.state.youtubeDisp.getCurrentTime();
+      if (status === 0) {
+        time = this.state.youtubeDisp.getDuration();
+      }
       const playingData: { movie_id?: string; time: number; isPlaying: boolean } = {
         time: time || 0.0,
-        isPlaying: status ? this.statusCheck(status) : false
+        isPlaying: this.statusCheck(status) ? true : false
       };
       // console.log('プレイングデータをemitします', playingData);
       if (this.state.videoId) {
@@ -139,17 +142,21 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('newplayingData', res);
       if (res.movie_id) {
         this.state.youtubeDisp.cueVideoById(res.movie_id);
         this.setState({ videoId: res.movie_id });
       }
       this.setUpBuffer(this.state.youtubeDisp).then(() => {
-        if (res.isPlaying) {
-          this.state.youtubeDisp?.seekTo(res.time + 1.5, true);
+        if (this.state.youtubeDisp?.getDuration() === res.time) {
+          this.state.youtubeDisp?.seekTo(res.time - 0.5, true);
           this.state.youtubeDisp?.playVideo();
         } else {
-          this.state.youtubeDisp?.seekTo(res.time, true);
+          if (res.isPlaying) {
+            this.state.youtubeDisp?.seekTo(res.time + 1.5, true);
+            this.state.youtubeDisp?.playVideo();
+          } else {
+            this.state.youtubeDisp?.seekTo(res.time, true);
+          }
         }
         window.setTimeout(() => {
           this.setState({ isFirst: false });
@@ -161,6 +168,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   /** ステータスナンバーから再生中か停止中かを返す */
   statusCheck = (value: number): boolean => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
+    console.log('status', value);
     let isPlaying = false;
     switch (value) {
       case -1: // 未開始
@@ -182,6 +190,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         isPlaying = false;
         break;
     }
+    console.log('isPlaying', isPlaying);
     return isPlaying;
   };
 
