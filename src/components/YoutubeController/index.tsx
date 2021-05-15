@@ -153,6 +153,7 @@ export const YoutubeController: React.FC<YoutubeControllerProps> = (props: Youtu
     } else {
       props.youtubeDisp?.pauseVideo();
     }
+    statusCheck(props.videoStatus);
   };
 
   /** ミュート状態の切り替え */
