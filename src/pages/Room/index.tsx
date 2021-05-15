@@ -108,6 +108,12 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
         return newArray;
       });
     });
+    socket.on('new_playlist', (res: { playlist: PlayListItem[] }) => {
+      setPlayList(() => {
+        const newPlayList = res.playlist;
+        return newPlayList;
+      });
+    });
   }, [socket]);
 
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
