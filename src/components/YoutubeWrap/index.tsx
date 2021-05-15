@@ -300,10 +300,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
     onEnd: ({ target }) => {
-      if (this.props.room.isOwner) {
-        // 動画が終了したことをサーバーに通知
-        // this.socket.emit();
-      }
+      this.socket.emit('next_video');
     }
   };
 
