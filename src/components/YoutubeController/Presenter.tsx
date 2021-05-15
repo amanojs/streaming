@@ -105,12 +105,12 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
           <Grid item xs={10} sm={6} md={6} lg={6} xl={6}>
             <Grid container justify="center" alignItems="center" spacing={1}>
               <Grid item>
-                <IconButton size="medium" onClick={() => props.fastTimed(-15)}>
+                <IconButton size="medium" onClick={() => props.fastTimed(-15)} onKeyUp={(e) => e.preventDefault()}>
                   <FastRewind fontSize="small" color="secondary" />
                 </IconButton>
               </Grid>
               <Grid item>
-                <IconButton onClick={props.playOrPause}>
+                <IconButton onClick={props.playOrPause} onKeyUp={(e) => e.preventDefault()}>
                   {props.statusIcon === 'play' ? (
                     <PlayArrow fontSize="large" color="secondary" />
                   ) : (
@@ -119,7 +119,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                 </IconButton>
               </Grid>
               <Grid item>
-                <IconButton size="medium" onClick={() => props.fastTimed(15)}>
+                <IconButton size="medium" onClick={() => props.fastTimed(15)} onKeyUp={(e) => e.preventDefault()}>
                   <FastForward fontSize="small" color="secondary" />
                 </IconButton>
               </Grid>
