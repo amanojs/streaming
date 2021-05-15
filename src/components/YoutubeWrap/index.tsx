@@ -12,12 +12,13 @@ interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
   room: RoomState;
   nowPlaying: PlayListItem;
+  videoStatus: number;
+  setVideoStatus: (status: number) => void;
 }
 
 interface YoutubeWrapState {
   youtubeDisp: YouTubePlayer | undefined;
   videoId: string;
-  videoStatus: number;
   getAction: boolean;
   isFirst: boolean;
   volume: number;
@@ -32,7 +33,6 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.state = {
       youtubeDisp: undefined, // youtube target
       videoId: '',
-      videoStatus: -1, // YouTubeコンポーネントのステータスが変更された時に変更される
       getAction: false,
       isFirst: true, // 参加時かどうかのフラグ
       volume: 0, // ボリューム
@@ -296,7 +296,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
-      this.setState({ videoStatus: data });
+      this.props.setVideoStatus(data);
     },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
     onEnd: ({ target }) => {
@@ -382,7 +382,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
           controller={{
             socket: this.socket,
             youtubeDisp: this.state.youtubeDisp,
-            videoStatus: this.state.videoStatus,
+            videoStatus: this.props.videoStatus,
             volume: this.state.volume,
             isMuted: this.state.isMuted,
             mute: this.mute,
