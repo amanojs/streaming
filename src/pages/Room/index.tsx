@@ -200,11 +200,11 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   };
 
   const deletePlayListItem = (index: number) => {
-    socket?.emit('delete', { index });
+    socket?.emit('playlist_remove', { index });
   };
 
   const deletePlayList = () => {
-    socket?.emit('delete', { index: -1 });
+    socket?.emit('playlist_remove', { index: -1 });
   };
 
   return (
