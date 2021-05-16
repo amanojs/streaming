@@ -141,6 +141,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     });
 
     this.socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
+      console.log(res);
       if (!this.state.youtubeDisp) return;
       if (res.movie_id) {
         this.state.youtubeDisp.cueVideoById(res.movie_id);
