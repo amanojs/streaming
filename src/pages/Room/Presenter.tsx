@@ -11,6 +11,10 @@ import { PlayListItem } from '../../components/PlayList';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket | null;
+  videoStatus: number;
+  setVideoStatus: (status: number) => void;
+  nowPlaying: PlayListItem;
+  setNowPlaying: (item: PlayListItem) => void;
   room: RoomState;
   nameDialog: boolean;
   createForm: {
@@ -25,6 +29,9 @@ interface PresenterProps {
   playList: {
     nowPlaying: PlayListItem;
     playList: PlayListItem[];
+    skipPlayList: () => void;
+    deletePlayListItem: (index: number) => void;
+    deletePlayList: () => void;
   };
 }
 
@@ -35,7 +42,14 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         <div className="RoomContainer">
           <div className="movieWrap">
             <div className="movie">
-              <YoutubeWrap socket={props.socket} room={props.room} nowPlaying={props.playList.nowPlaying} />
+              <YoutubeWrap
+                socket={props.socket}
+                videoStatus={props.videoStatus}
+                setVideoStatus={props.setVideoStatus}
+                nowPlaying={props.nowPlaying}
+                setNowPlaying={props.setNowPlaying}
+                room={props.room}
+              />
             </div>
 
             <div className="chat_desk">

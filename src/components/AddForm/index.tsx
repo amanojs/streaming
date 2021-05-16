@@ -15,7 +15,7 @@ export const AddForm: React.FC<AddFormProps> = (props: AddFormProps) => {
 
   const addMovieHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    socket.emit('youtube_add_movie', videoId);
+    socket.emit('playlist_add', { video_url: videoId });
     setVideoId('');
   };
 

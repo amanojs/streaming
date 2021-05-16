@@ -5,6 +5,9 @@ interface PlayListProps {
   socket: SocketIOClient.Socket;
   nowPlaying: PlayListItem;
   playList: PlayListItem[];
+  skipPlayList: () => void;
+  deletePlayListItem: (index: number) => void;
+  deletePlayList: () => void;
   isOpen: boolean;
   smartphone?: boolean;
 }
@@ -22,6 +25,9 @@ export const PlayList: React.FC<PlayListProps> = (props: PlayListProps) => {
       socket={props.socket}
       nowPlaying={props.nowPlaying}
       playList={props.playList}
+      skipPlayList={props.skipPlayList}
+      deletePlayListItem={props.deletePlayListItem}
+      deletePlayList={props.deletePlayList}
       isOpen={props.isOpen}
       smartphone={props.smartphone}
     />

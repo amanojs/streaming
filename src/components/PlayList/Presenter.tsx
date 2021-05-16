@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Grid, IconButton } from '@material-ui/core';
 import './main.css';
-import { DonutSmall } from '@material-ui/icons';
+import { SkipNext, Delete } from '@material-ui/icons';
 import { PlayListItem } from '.';
 
 interface PresenterProps {
   socket: SocketIOClient.Socket;
   nowPlaying: PlayListItem;
+  skipPlayList: () => void;
+  deletePlayListItem: (index: number) => void;
+  deletePlayList: () => void;
   playList: PlayListItem[];
   isOpen: boolean;
   smartphone?: boolean;
@@ -17,6 +20,18 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
   const nowPlaying = props.nowPlaying;
   return (
     <React.Fragment>
+      <Grid className="listControll" container spacing={1}>
+        <Grid item>
+          <IconButton size="small" onClick={props.skipPlayList}>
+            <SkipNext fontSize="small" />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <IconButton size="small" onClick={props.deletePlayList}>
+            <Delete fontSize="small" />
+          </IconButton>
+        </Grid>
+      </Grid>
       <div className="movieDetail">
         <div style={{ color: '#999', fontSize: '14px', paddingBottom: '4px' }}>now playing...</div>
         <Grid container spacing={1}>
@@ -45,7 +60,7 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
         </Grid>
       </div>
       <div className="movieList" style={{ height: props.isOpen ? '200px' : '0px' }}>
-        {props.playList.map((movie, index) => {
+        {playList.map((movie, index) => {
           return (
             <Grid
               container

@@ -22,6 +22,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   const [nameDialog, setNameDialog] = React.useState<boolean>(false);
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
+  const [videoStatus, setVideoStatus] = React.useState<number>(-1);
   const [chatList, setChatList] = React.useState<ChatItem[]>([]);
   const [nowPlaying, setNowPlaying] = React.useState<PlayListItem>({
     videoId: '5fooxt19UvA',
@@ -29,26 +30,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
     requester: 'amanojs'
   });
-  const [playList, setPlayList] = React.useState<PlayListItem[]>([
-    {
-      videoId: 'qOqPBTU6s6g',
-      thumbnail: 'http://img.youtube.com/vi/qOqPBTU6s6g/mqdefault.jpg',
-      title: 'リモート面接中にヒゲ剃る奴',
-      requester: 'eiyuu'
-    },
-    {
-      videoId: '5fooxt19UvA',
-      thumbnail: 'http://img.youtube.com/vi/5fooxt19UvA/mqdefault.jpg',
-      title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
-      requester: 'amanojs'
-    },
-    {
-      videoId: 'SLCat_OT7FM',
-      thumbnail: 'http://img.youtube.com/vi/SLCat_OT7FM/mqdefault.jpg',
-      title: 'GWスタート記念豚牛貝ソロバーベキューをキメるだけの動画',
-      requester: 'kenji'
-    }
-  ]);
+  const [playList, setPlayList] = React.useState<PlayListItem[]>([]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -110,6 +92,21 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     });
   }, [socket]);
 
+  React.useEffect(() => {
+    if (!socket) return;
+    socket.off('new_playlist');
+    socket.on('new_playlist', (res: { playlist: PlayListItem[] }) => {
+      console.log(res.playlist);
+      setPlayList((prev) => {
+        if (videoStatus === 0 && prev.length === 0) {
+          socket.emit('next_video');
+        }
+        const newPlayList = res.playlist;
+        return newPlayList;
+      });
+    });
+  }, [socket, videoStatus]);
+
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
     if (!socket) return sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
     socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: JoinRoomRes) => {
@@ -133,6 +130,10 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     });
   };
 
+  const setNowPlayingHandler = (item: PlayListItem) => {
+    setNowPlaying(item);
+  };
+
   const getParamValue = (key: string): string | null => {
     const params = new URLSearchParams(window.location.search);
     const value = params.get(key);
@@ -153,6 +154,10 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       anchorOrigin: { horizontal: position.horizontal, vertical: position.vertical },
       autoHideDuration: 2000
     });
+  };
+
+  const setVideoStatusHandler = (status: number) => {
+    setVideoStatus(status);
   };
 
   // ユーザネーム入力に参照するstate
@@ -195,14 +200,30 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     joinRoom(socket, { roomId: enterId });
   };
 
+  const skipPlayList = () => {
+    socket?.emit('next_video');
+  };
+
+  const deletePlayListItem = (index: number) => {
+    socket?.emit('playlist_remove', { index });
+  };
+
+  const deletePlayList = () => {
+    socket?.emit('playlist_remove', { index: -1 });
+  };
+
   return (
     <Presenter
       socket={socket}
+      videoStatus={videoStatus}
+      setVideoStatus={setVideoStatusHandler}
+      setNowPlaying={setNowPlayingHandler}
+      nowPlaying={nowPlaying}
       room={room}
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
       chat={{ chatList, setChatList }}
-      playList={{ nowPlaying, playList }}
+      playList={{ nowPlaying, playList, skipPlayList, deletePlayListItem, deletePlayList }}
     />
   );
 };

@@ -15,6 +15,9 @@ interface TabWrapProps {
   playList: {
     nowPlaying: PlayListItem;
     playList: PlayListItem[];
+    skipPlayList: () => void;
+    deletePlayListItem: (index: number) => void;
+    deletePlayList: () => void;
   };
   smartphone?: boolean;
 }
