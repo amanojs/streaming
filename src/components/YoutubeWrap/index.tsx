@@ -86,8 +86,8 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     }
 
     this.socket.on('new_video', (res: { videoData: PlayListItem }) => {
-      console.log('newVideo', res);
       if (!this.state.youtubeDisp) return;
+      console.log('newVideo', res);
       this.state.youtubeDisp.cueVideoById(res.videoData.videoId);
       this.props.setNowPlaying(res.videoData);
       this.setUpBuffer(this.state.youtubeDisp).then(() => {
@@ -97,7 +97,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_pause', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('listen!pause!', time);
+      console.log('listen!pause!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.pauseVideo();
         this.state.youtubeDisp?.seekTo(time, true);

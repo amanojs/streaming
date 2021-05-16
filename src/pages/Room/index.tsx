@@ -96,13 +96,14 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     if (!socket) return;
     socket.off('new_playlist');
     socket.on('new_playlist', (res: { playlist: PlayListItem[] }) => {
-      setPlayList(() => {
+      console.log(res.playlist);
+      setPlayList((prev) => {
+        if (videoStatus === 0 && prev.length === 0) {
+          socket.emit('next_video');
+        }
         const newPlayList = res.playlist;
         return newPlayList;
       });
-      if (videoStatus === 0) {
-        socket.emit('next_video');
-      }
     });
   }, [socket, videoStatus]);
 
