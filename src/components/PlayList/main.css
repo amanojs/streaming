@@ -8,9 +8,13 @@
     transition: 0.5s;
 }
 
+.listControll{
+    padding: 5px 20px 5px 10px;
+}
+
 .movieDetail{
     width: 100%;
-    padding: 10px 20px 30px 20px;
+    padding: 0px 20px 15px 20px;
     box-sizing: border-box;
     border-bottom: 5px solid #eee;
     background-color: #fff;

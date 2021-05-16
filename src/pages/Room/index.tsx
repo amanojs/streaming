@@ -195,6 +195,18 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     joinRoom(socket, { roomId: enterId });
   };
 
+  const skipPlayList = () => {
+    socket?.emit('next_video');
+  };
+
+  const deletePlayListItem = (index: number) => {
+    socket?.emit('delete', { index });
+  };
+
+  const deletePlayList = () => {
+    socket?.emit('delete', { index: -1 });
+  };
+
   return (
     <Presenter
       socket={socket}
@@ -204,7 +216,7 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
       chat={{ chatList, setChatList }}
-      playList={{ nowPlaying, playList }}
+      playList={{ nowPlaying, playList, skipPlayList, deletePlayListItem, deletePlayList }}
     />
   );
 };
