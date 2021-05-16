@@ -13,6 +13,8 @@ interface PresenterProps {
   socket: SocketIOClient.Socket | null;
   videoStatus: number;
   setVideoStatus: (status: number) => void;
+  nowPlaying: PlayListItem;
+  setNowPlaying: (item: PlayListItem) => void;
   room: RoomState;
   nameDialog: boolean;
   createForm: {
@@ -44,8 +46,9 @@ export const Presenter: React.FC<PresenterProps> = (props: PresenterProps) => {
                 socket={props.socket}
                 videoStatus={props.videoStatus}
                 setVideoStatus={props.setVideoStatus}
+                nowPlaying={props.nowPlaying}
+                setNowPlaying={props.setNowPlaying}
                 room={props.room}
-                nowPlaying={props.playList.nowPlaying}
               />
             </div>
 

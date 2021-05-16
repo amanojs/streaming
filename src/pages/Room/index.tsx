@@ -129,6 +129,10 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     });
   };
 
+  const setNowPlayingHandler = (item: PlayListItem) => {
+    setNowPlaying(item);
+  };
+
   const getParamValue = (key: string): string | null => {
     const params = new URLSearchParams(window.location.search);
     const value = params.get(key);
@@ -212,6 +216,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       socket={socket}
       videoStatus={videoStatus}
       setVideoStatus={setVideoStatusHandler}
+      setNowPlaying={setNowPlayingHandler}
+      nowPlaying={nowPlaying}
       room={room}
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
