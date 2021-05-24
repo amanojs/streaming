@@ -6,16 +6,19 @@ import { Presenter } from './Presenter';
 import { YouTubeProps } from 'react-youtube';
 import { RoomState } from '../../store/modules/roomModule';
 import Cookie from 'js-cookie';
+import { PlayListItem } from '../PlayList';
 
 interface YoutubeWrapProps {
   socket: SocketIOClient.Socket;
   room: RoomState;
+  nowPlaying: PlayListItem;
+  setNowPlaying: (item: PlayListItem) => void;
+  videoStatus: number;
+  setVideoStatus: (status: number) => void;
 }
 
 interface YoutubeWrapState {
   youtubeDisp: YouTubePlayer | undefined;
-  videoId: string;
-  videoStatus: number;
   getAction: boolean;
   isFirst: boolean;
   volume: number;
@@ -29,8 +32,6 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     super(props);
     this.state = {
       youtubeDisp: undefined, // youtube target
-      videoId: '',
-      videoStatus: -1, // YouTubeコンポーネントのステータスが変更された時に変更される
       getAction: false,
       isFirst: true, // 参加時かどうかのフラグ
       volume: 0, // ボリューム
@@ -45,6 +46,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   }
 
   socket = this.props.socket;
+  nowPlaying = this.props.nowPlaying;
 
   defaultOpts = (isSmartPhone: boolean): YouTubeProps['opts'] => ({
     width: '100%',
@@ -72,7 +74,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
   /** socket client Listennerを設定 */
   setUpSocketListenner = (): void => {
     const listenners = [
-      'youtube_add_movie',
+      'new_video',
       'youtube_pause',
       'youtube_play',
       'youtube_seek',
@@ -83,11 +85,11 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       this.socket.off(listenner);
     }
 
-    this.socket.on('youtube_add_movie', (movie_id: string) => {
+    this.socket.on('new_video', (res: { videoData: PlayListItem }) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('movieId', movie_id);
-      this.setState({ videoId: movie_id });
-      this.state.youtubeDisp.cueVideoById(movie_id);
+      console.log('newVideo', res);
+      this.state.youtubeDisp.cueVideoById(res.videoData.videoId);
+      this.props.setNowPlaying(res.videoData);
       this.setUpBuffer(this.state.youtubeDisp).then(() => {
         this.state.youtubeDisp?.playVideo();
       });
@@ -95,7 +97,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
 
     this.socket.on('youtube_pause', (time: number) => {
       if (!this.state.youtubeDisp) return;
-      // console.log('listen!pause!', time);
+      console.log('listen!pause!', time);
       this.setState({ getAction: true }, () => {
         this.state.youtubeDisp?.pauseVideo();
         this.state.youtubeDisp?.seekTo(time, true);
@@ -118,14 +120,18 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     this.socket.on('request_playing_data', async (participant_id: string) => {
       if (!this.state.youtubeDisp) return;
       const status = this.state.youtubeDisp.getPlayerState();
-      const time = this.state.youtubeDisp.getCurrentTime();
-      const playingData: { movie_id?: string; time: number; isPlaying: boolean } = {
+      let time = this.state.youtubeDisp.getCurrentTime();
+      if (status === 0) {
+        time = this.state.youtubeDisp.getDuration();
+      }
+      const playingData: { movie_id?: string; time: number; isPlaying: boolean; playlistItem: PlayListItem } = {
         time: time || 0.0,
-        isPlaying: status ? this.statusCheck(status) : false
+        isPlaying: this.statusCheck(status) ? true : false,
+        playlistItem: this.props.nowPlaying
       };
       // console.log('プレイングデータをemitします', playingData);
-      if (this.state.videoId) {
-        playingData.movie_id = this.state.videoId;
+      if (this.props.nowPlaying.videoId) {
+        playingData.movie_id = this.props.nowPlaying.videoId;
       }
       const payload = {
         socket_id: participant_id,
@@ -134,30 +140,39 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
       this.socket.emit('send_playing_data', payload);
     });
 
-    this.socket.on('new_playing_data', (res: { movie_id?: string; time: number; isPlaying: boolean }) => {
-      if (!this.state.youtubeDisp) return;
-      // console.log('newplayingData', res);
-      if (res.movie_id) {
-        this.state.youtubeDisp.cueVideoById(res.movie_id);
-        this.setState({ videoId: res.movie_id });
-      }
-      this.setUpBuffer(this.state.youtubeDisp).then(() => {
-        if (res.isPlaying) {
-          this.state.youtubeDisp?.seekTo(res.time + 1.5, true);
-          this.state.youtubeDisp?.playVideo();
-        } else {
-          this.state.youtubeDisp?.seekTo(res.time, true);
+    this.socket.on(
+      'new_playing_data',
+      (res: { movie_id?: string; time: number; isPlaying: boolean; playlistItem: PlayListItem }) => {
+        console.log(res);
+        if (!this.state.youtubeDisp) return;
+        if (res.playlistItem) {
+          this.state.youtubeDisp.cueVideoById(res.playlistItem.videoId);
+          this.props.setNowPlaying(res.playlistItem);
         }
-        window.setTimeout(() => {
-          this.setState({ isFirst: false });
-        }, 500);
-      });
-    });
+        this.setUpBuffer(this.state.youtubeDisp).then(() => {
+          if (this.state.youtubeDisp?.getDuration() === res.time) {
+            this.state.youtubeDisp?.seekTo(res.time - 0.5, true);
+            this.state.youtubeDisp?.playVideo();
+          } else {
+            if (res.isPlaying) {
+              this.state.youtubeDisp?.seekTo(res.time + 1.5, true);
+              this.state.youtubeDisp?.playVideo();
+            } else {
+              this.state.youtubeDisp?.seekTo(res.time, true);
+            }
+          }
+          window.setTimeout(() => {
+            this.setState({ isFirst: false });
+          }, 500);
+        });
+      }
+    );
   };
 
   /** ステータスナンバーから再生中か停止中かを返す */
   statusCheck = (value: number): boolean => {
     // https://developers.google.com/youtube/iframe_api_reference?hl=ja#Adding_event_listener 参照
+    console.log('status', value);
     let isPlaying = false;
     switch (value) {
       case -1: // 未開始
@@ -179,6 +194,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         isPlaying = false;
         break;
     }
+    console.log('isPlaying', isPlaying);
     return isPlaying;
   };
 
@@ -221,13 +237,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         this.mute();
 
         if (this.props.room.isOwner) {
-          target.cueVideoById('ZCY5JS-nuz0');
-          this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
-            this.setUpBuffer(target).then(() => {
-              // console.log('Buffer完了');
-              this.setState({ isFirst: false });
-            });
-          });
+          this.changeVideo(target, this.nowPlaying.videoId);
         } else {
           this.socket.emit('youtube_sync');
         }
@@ -277,13 +287,7 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
                 target.setVolume(0);
                 if (this.props.room.isOwner) {
                   if (prev_flag === 0) {
-                    target.cueVideoById('ZCY5JS-nuz0');
-                    this.setState({ videoId: 'ZCY5JS-nuz0' }, () => {
-                      this.setUpBuffer(target).then(() => {
-                        // console.log('Buffer完了');
-                        this.setState({ isFirst: false });
-                      });
-                    });
+                    this.changeVideo(target, this.nowPlaying.videoId);
                   }
                 } else {
                   this.socket.emit('youtube_sync');
@@ -296,9 +300,21 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
     },
     onStateChange: ({ target, data }: { target: YouTubePlayer; data: number }) => {
       // console.log('onStateChange', data);
-      this.setState({ videoStatus: data });
-    }
+      this.props.setVideoStatus(data);
+    },
     // https://developers.google.com/youtube/player_parameters?hl=ja ここ参照してる
+    onEnd: ({ target }) => {
+      this.socket.emit('next_video');
+    }
+  };
+
+  /** 動画を変更して setUpBuffer を呼び出す関数 */
+  changeVideo = (target: YouTubePlayer, videoId: string): void => {
+    target.cueVideoById(videoId);
+    this.setUpBuffer(target).then(() => {
+      // console.log('Buffer完了');
+      this.setState({ isFirst: false });
+    });
   };
 
   /** ミュート状態で1秒間再生し、元に戻して一時停止する初期バッファーを読み込むための関数です */
@@ -364,11 +380,11 @@ export class YoutubeWrap extends React.Component<YoutubeWrapProps, YoutubeWrapSt
         <Presenter
           player={this.player}
           opts={this.state.opts}
-          videoId={this.state.videoId}
+          videoId={this.props.nowPlaying.videoId}
           controller={{
             socket: this.socket,
             youtubeDisp: this.state.youtubeDisp,
-            videoStatus: this.state.videoStatus,
+            videoStatus: this.props.videoStatus,
             volume: this.state.volume,
             isMuted: this.state.isMuted,
             mute: this.mute,

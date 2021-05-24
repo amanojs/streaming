@@ -1,0 +1,31 @@
+.movieList{
+    flex-grow: 1;
+    background: #F9F9F9;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    transition: 0.5s;
+}
+
+.listControll{
+    padding: 5px 20px 5px 10px;
+}
+
+.movieDetail{
+    width: 100%;
+    padding: 0px 20px 15px 20px;
+    box-sizing: border-box;
+    border-bottom: 5px solid #eee;
+    background-color: #fff;
+    font-family: Noto Sans JP;
+    user-select: none;
+}
+.movies{
+    cursor: pointer;
+    user-select: none;
+    font-family: Noto Sans JP;
+}
+.movies{
+    background-color: #eee;
+}

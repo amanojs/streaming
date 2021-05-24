@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import roomModule from '../../store/modules/roomModule';
+import roomModule, { User } from '../../store/modules/roomModule';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
 import Cookie from 'js-cookie';
+
+interface CreateRoomRes {
+  result: boolean;
+  room_id: string;
+  userList: User[];
+}
 
 const Home: React.FC<PageProps> = (props: PageProps) => {
   const [mout, mountkeeper] = React.useState();
@@ -55,10 +61,17 @@ const Home: React.FC<PageProps> = (props: PageProps) => {
     // console.log(socket);
     if (socket) {
       Cookie.set('streaming_name', userName.value);
-      socket.emit('create_room', userName.value, (res: { result: boolean; room_id: string }) => {
-        // console.log(res);
+      socket.emit('create_room', userName.value, (res: CreateRoomRes) => {
+        console.log(res);
         if (res.result) {
-          dispach(roomModule.actions.setRoom({ roomId: res.room_id, userName: userName.value, isOwner: true }));
+          dispach(
+            roomModule.actions.setRoom({
+              roomId: res.room_id,
+              userName: userName.value,
+              isOwner: true,
+              userList: res.userList || []
+            })
+          );
           history.push('/room' + '?room_id=' + res.room_id);
         }
         setLoad(false);

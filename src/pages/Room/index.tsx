@@ -2,21 +2,38 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { VariantType, useSnackbar } from 'notistack';
-import roomModule from '../../store/modules/roomModule';
+import appModule from '../../store/modules/appModule';
+import roomModule, { User } from '../../store/modules/roomModule';
 import { State } from '../../store/store';
 import { Presenter } from './Presenter';
 import { PageProps } from '../../App';
 import { InputSub } from '../../components/CreateForm';
 import Cookie from 'js-cookie';
+import { ChatItem } from '../../components/Chat';
+import { PlayListItem } from '../../components/PlayList';
+
+interface JoinRoomRes {
+  result: boolean;
+  userList?: User[];
+}
 
 const Room: React.FC<PageProps> = (props: PageProps) => {
   const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(null);
   const [nameDialog, setNameDialog] = React.useState<boolean>(false);
   const [enterId, setEnterId] = React.useState<string>('');
   const [load, setLoad] = React.useState<boolean>(false);
+  const [videoStatus, setVideoStatus] = React.useState<number>(-1);
+  const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+  const [nowPlaying, setNowPlaying] = React.useState<PlayListItem>({
+    videoId: '5fooxt19UvA',
+    thumbnail: 'http://img.youtube.com/vi/5fooxt19UvA/mqdefault.jpg',
+    title: '猫が初めてのチュールタワーに興奮しすぎてこうなったwww',
+    requester: 'amanojs'
+  });
+  const [playList, setPlayList] = React.useState<PlayListItem[]>([]);
   const room = useSelector((state: State) => state.room);
   const history = useHistory();
-  const dispach = useDispatch();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
@@ -47,6 +64,8 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
           sendNotifiction('ルームが存在しませんでした', 'error', { horizontal: 'center', vertical: 'top' });
           history.push('/');
         }
+      } else {
+        dispatch(appModule.actions.setHeader(true));
       }
     });
     return () => {
@@ -57,18 +76,51 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
   React.useEffect(() => {
     if (!socket) return;
     socket.on('user_joined', (res: { user: { id: string; name: string } }) => {
+      // console.log(res);
+      dispatch(roomModule.actions.addUser(res.user));
       sendNotifiction(res.user.name + 'が入室しました', 'success');
     });
     socket.on('user_left', (res: { user: { id: string; name: string } }) => {
+      dispatch(roomModule.actions.removeUser(res.user.id));
       sendNotifiction(res.user.name + 'が退出しました', 'error');
+    });
+    socket.on('new_chat', (chatItem: ChatItem) => {
+      setChatList((prev) => {
+        const newArray = [...prev, chatItem];
+        return newArray;
+      });
     });
   }, [socket]);
 
+  React.useEffect(() => {
+    if (!socket) return;
+    socket.off('new_playlist');
+    socket.on('new_playlist', (res: { playlist: PlayListItem[] }) => {
+      console.log(res.playlist);
+      setPlayList((prev) => {
+        if (videoStatus === 0 && prev.length === 0) {
+          socket.emit('next_video');
+        }
+        const newPlayList = res.playlist;
+        return newPlayList;
+      });
+    });
+  }, [socket, videoStatus]);
+
   const joinRoom = (socket: SocketIOClient.Socket, option: { roomId: string }) => {
     if (!socket) return sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
-    socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: boolean) => {
-      if (res) {
-        dispach(roomModule.actions.setRoom({ roomId: option.roomId, userName: userName.value, isOwner: false }));
+    socket.emit('join_room', { room_id: option.roomId, user_name: userName.value }, (res: JoinRoomRes) => {
+      console.log(res);
+      if (res.result) {
+        dispatch(
+          roomModule.actions.setRoom({
+            roomId: option.roomId,
+            userName: userName.value,
+            isOwner: false,
+            userList: res.userList || []
+          })
+        );
+        dispatch(appModule.actions.setHeader(true));
         setNameDialog(false);
       } else {
         sendNotifiction('入室に失敗しました', 'error', { horizontal: 'center', vertical: 'top' });
@@ -76,6 +128,10 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       }
       setLoad(false);
     });
+  };
+
+  const setNowPlayingHandler = (item: PlayListItem) => {
+    setNowPlaying(item);
   };
 
   const getParamValue = (key: string): string | null => {
@@ -98,6 +154,10 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
       anchorOrigin: { horizontal: position.horizontal, vertical: position.vertical },
       autoHideDuration: 2000
     });
+  };
+
+  const setVideoStatusHandler = (status: number) => {
+    setVideoStatus(status);
   };
 
   // ユーザネーム入力に参照するstate
@@ -140,12 +200,30 @@ const Room: React.FC<PageProps> = (props: PageProps) => {
     joinRoom(socket, { roomId: enterId });
   };
 
+  const skipPlayList = () => {
+    socket?.emit('next_video');
+  };
+
+  const deletePlayListItem = (index: number) => {
+    socket?.emit('playlist_remove', { index });
+  };
+
+  const deletePlayList = () => {
+    socket?.emit('playlist_remove', { index: -1 });
+  };
+
   return (
     <Presenter
       socket={socket}
+      videoStatus={videoStatus}
+      setVideoStatus={setVideoStatusHandler}
+      setNowPlaying={setNowPlayingHandler}
+      nowPlaying={nowPlaying}
       room={room}
       nameDialog={nameDialog}
       createForm={{ inputs, load, onSubmit: enterSubmitHandler }}
+      chat={{ chatList, setChatList }}
+      playList={{ nowPlaying, playList, skipPlayList, deletePlayListItem, deletePlayList }}
     />
   );
 };
